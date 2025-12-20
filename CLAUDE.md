@@ -92,6 +92,68 @@ context-engineering-blog/
 | `apps/blog/src/content/posts/` | Markdown посты |
 | `.env` | API ключи (НЕ коммитить!) |
 
+## Deployment
+
+### URLs
+- **Production**: https://ctxt.dev
+- **Cloudflare**: https://ctxt-dev-35d.pages.dev
+- **GitHub**: https://github.com/t3chn/context-engineering-blog
+
+### Автодеплой
+Каждый push в `main` автоматически деплоит на Cloudflare Pages через GitHub Actions.
+
+```bash
+# Ручной деплой (если нужно)
+pnpm --filter @ceb/blog build
+wrangler pages deploy apps/blog/dist --project-name=ctxt-dev
+```
+
+### GitHub Secrets (Settings → Secrets → Actions)
+| Secret | Описание |
+|--------|----------|
+| `CLOUDFLARE_API_TOKEN` | API токен с правами Pages |
+| `CLOUDFLARE_ACCOUNT_ID` | `6745078205fd18255ccc6dd791de78cb` |
+
+### Cloudflare Pages
+- **Project**: `ctxt-dev`
+- **Account**: inskricion@gmail.com
+- **Dashboard**: https://dash.cloudflare.com → Pages → ctxt-dev
+
+### Добавление нового домена
+1. Cloudflare API или Dashboard → Pages → ctxt-dev → Custom domains
+2. Добавить DNS запись:
+   ```
+   Type: CNAME
+   Name: @ (или subdomain)
+   Target: ctxt-dev-35d.pages.dev
+   Proxy: On
+   ```
+
+### Создание API токена Cloudflare
+1. https://dash.cloudflare.com/profile/api-tokens
+2. Create Token → "Edit Cloudflare Workers" template
+3. Permissions: Account/Cloudflare Pages/Edit
+4. Добавить в GitHub: `gh secret set CLOUDFLARE_API_TOKEN`
+
+## Security
+
+### Защита от утечки секретов
+- **Pre-commit hook**: `.husky/pre-commit` — блокирует коммиты с API ключами
+- **CI**: `gitleaks-action` сканирует на каждый push
+- **gitignore**: `.env`, `.env.local` исключены
+
+### Паттерны секретов (блокируются)
+- `sk-ant-*` (Anthropic)
+- `sk-*` (OpenAI)
+- `AIza*` (Google)
+- Telegram bot tokens
+- AWS/GitHub tokens
+
+### Если секрет утёк
+1. Немедленно ротировать ключ в соответствующем сервисе
+2. Проверить git history: `git log -p --all -S 'SECRET_PATTERN'`
+3. Если в истории — использовать `git filter-branch` или BFG Repo-Cleaner
+
 ## Conventions
 
 - Язык кода: TypeScript (strict mode)
