@@ -1,52 +1,52 @@
 ---
 name: ceb-content
 description: |
-  Генерация контента для Context Engineering Blog в стиле Context-First Thinking.
-  Use when: создание постов для Telegram (@ctxtdev), статей для блога (RU/EN),
-  редактирование или улучшение существующего контента о context engineering.
-  Triggers: "telegram post", "blog article", "статья", "пост", "контент",
-  "context engineering", "напиши пост", "сгенерируй статью".
+  Content generation for Context Engineering Blog using Context-First Thinking style.
+  Use when: creating Telegram posts (@ctxtdev), blog articles (RU/EN),
+  editing or improving existing content about context engineering.
+  Triggers: "telegram post", "blog article", "article", "post", "content",
+  "context engineering", "write post", "generate article".
 ---
 
 # Context Engineering Blog — Content Generation
 
-## Загрузка контекста
+## Loading Context
 
-1. Прочитай [references/TLDR.md](references/TLDR.md) — суть стиля
-2. Загрузи [references/INDEX.json](references/INDEX.json) и выбери секции по задаче:
+1. Read [references/TLDR.md](references/TLDR.md) — style essence
+2. Load [references/INDEX.json](references/INDEX.json) and select sections by task:
    - `telegram_post` → core + telegram
    - `blog_ru` → core + blog_ru + template
    - `blog_en` → core + blog_en
-3. Примеры загружай из assets/ только если нужны
+3. Load examples from assets/ only if needed
 
-## Философия: Context-First Thinking
+## Philosophy: Context-First Thinking
 
-Каждый пост отвечает на 4 вопроса:
+Every post answers 4 questions:
 
-| Этап | Вопрос | Назначение |
-|------|--------|------------|
-| **Проблема** | Что пытаемся решить? | Крючок |
-| **Контекст** | Почему это сложно/важно? | Глубина |
-| **Решение** | Как подойти? | Практика |
-| **Инсайт** | Что поняли нового? | Ценность |
+| Stage | Question | Purpose |
+|-------|----------|---------|
+| **Problem** | What are we trying to solve? | Hook |
+| **Context** | Why is it hard/important? | Depth |
+| **Solution** | How to approach it? | Practice |
+| **Insight** | What new understanding? | Value |
 
-## Быстрый старт
+## Quick Start
 
-### Telegram пост
+### Telegram Post
 
 ```
-[Проблема — наблюдение или боль]
+[Problem — observation or pain point]
 
-[Контекст — почему это важно]
+[Context — why it matters]
 
-[Решение или подход]
+[Solution or approach]
 
-[Инсайт — что изменилось в понимании]
+[Insight — what changed in understanding]
 
 #contextengineering #llm
 ```
 
-### Blog статья
+### Blog Article
 
 ```markdown
 ---
@@ -57,44 +57,44 @@ tags: ["context-engineering", "..."]
 lang: ru
 ---
 
-## Проблема
+## Problem
 ...
 
-## Контекст
+## Context
 ...
 
-## Решение
+## Solution
 ...
 
-## Инсайт
+## Insight
 ...
 ```
 
-## Чек-листы
+## Checklists
 
 ### Pre-flight
-- [ ] Определена конкретная проблема?
-- [ ] Есть контекст (почему важно)?
-- [ ] Решение практичное?
-- [ ] Есть инсайт?
+- [ ] Specific problem defined?
+- [ ] Context present (why it matters)?
+- [ ] Practical solution?
+- [ ] Insight included?
 
 ### Post-flight
-- [ ] Telegram: чистый текст + минимум эмодзи?
-- [ ] Хештеги в конце?
-- [ ] Нет подписи автора?
-- [ ] Нет мотивационного тона?
+- [ ] Telegram: plain text + minimal emoji?
+- [ ] Hashtags at the end?
+- [ ] No author signature?
+- [ ] No motivational tone?
 
-## Платформы
+## Platforms
 
-Детальные правила:
+Detailed rules:
 - Telegram: [references/TELEGRAM.md](references/TELEGRAM.md)
 - Blog RU: [references/BLOG_RU.md](references/BLOG_RU.md)
 - Blog EN: [references/BLOG_EN.md](references/BLOG_EN.md)
 
-## Запрещено
+## Prohibited
 
-- Чрезмерные эмодзи (max 1-2 на пост)
-- Подпись автора
-- CTA ("подписывайтесь", "читайте больше")
-- Мотивационный тон
-- Bullet-списки в Telegram (визуальный шум)
+- Excessive emoji (max 1-2 per post)
+- Author signature
+- CTA ("subscribe", "read more")
+- Motivational tone
+- Bullet lists in Telegram (visual noise)

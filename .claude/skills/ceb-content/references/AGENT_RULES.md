@@ -1,62 +1,62 @@
 # Agent Rules — Content Generation
 
-## Минимальная загрузка
+## Minimal Loading
 
-1. Читай TLDR.md первым
-2. Загружай секции по задаче из INDEX.json:
+1. Read TLDR.md first
+2. Load sections by task from INDEX.json:
    - `telegram_post` → core + telegram
    - `blog_ru` → core + blog_ru
    - `blog_en` → core + blog_en
-3. Assets загружай только если нужны шаблоны
+3. Load assets only if templates are needed
 
-## Token budget
+## Token Budget
 
-- Не загружай всё подряд
-- TLDR + нужные секции = достаточно
-- Если сомневаешься — спроси
+- Don't load everything
+- TLDR + needed sections = enough
+- If in doubt — ask
 
-## Pre-flight checklist
+## Pre-flight Checklist
 
-Перед генерацией:
+Before generation:
 
-- [ ] Определена конкретная проблема?
-- [ ] Есть контекст (почему это важно)?
-- [ ] Решение практичное и конкретное?
-- [ ] Есть инсайт (что нового)?
+- [ ] Specific problem defined?
+- [ ] Context present (why it matters)?
+- [ ] Solution practical and specific?
+- [ ] Insight included (what's new)?
 
-## Post-flight checklist
+## Post-flight Checklist
 
-После генерации:
+After generation:
 
-- [ ] Формат: Проблема → Контекст → Решение → Инсайт?
-- [ ] Telegram: чистый текст + минимум эмодзи?
-- [ ] Хештеги в конце?
-- [ ] Нет подписи автора?
-- [ ] Нет мотивационного тона?
-- [ ] Нет CTA?
+- [ ] Format: Problem → Context → Solution → Insight?
+- [ ] Telegram: plain text + minimal emoji?
+- [ ] Hashtags at the end?
+- [ ] No author signature?
+- [ ] No motivational tone?
+- [ ] No CTA?
 
-## Конфликты
+## Conflicts
 
-Если запрос пользователя противоречит правилам стиля:
+If user request contradicts style rules:
 
-1. Уточни намерение пользователя
-2. Предложи альтернативу в рамках стиля
-3. Если пользователь настаивает — следуй его указаниям
+1. Clarify user's intent
+2. Suggest alternative within style
+3. If user insists — follow their instructions
 
-## Расширяемость
+## Extensibility
 
-Новые платформы добавляются как:
+New platforms are added as:
 
-1. Новый файл в references/
-2. Новая секция в INDEX.json
-3. Новый task в tasks
+1. New file in references/
+2. New section in INDEX.json
+3. New task in tasks
 
-## Частые ошибки
+## Common Mistakes
 
-| Ошибка | Исправление |
-|--------|-------------|
-| Слишком много эмодзи | Max 1-2 на пост |
-| Bullet-списки в TG | Заменить на абзацы |
-| Мотивационный тон | Убрать, оставить факты |
-| Подпись автора | Удалить |
-| Нет хештегов | Добавить в конец |
+| Mistake | Fix |
+|---------|-----|
+| Too many emoji | Max 1-2 per post |
+| Bullet lists in TG | Replace with paragraphs |
+| Motivational tone | Remove, keep facts |
+| Author signature | Delete |
+| No hashtags | Add at the end |

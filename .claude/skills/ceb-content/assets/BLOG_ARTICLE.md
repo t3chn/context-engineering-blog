@@ -4,89 +4,89 @@
 
 ```yaml
 ---
-title: "Заголовок статьи"
-description: "SEO описание в 1-2 предложения. Ключевые слова: context engineering, LLM."
+title: "Article Title"
+description: "SEO description in 1-2 sentences. Keywords: context engineering, LLM."
 date: YYYY-MM-DD
-tags: ["context-engineering", "тема"]
+tags: ["context-engineering", "topic"]
 lang: ru
 ---
 ```
 
-## Структура статьи
+## Article Structure
 
 ```markdown
-## Проблема
+## Problem
 
-[Конкретная боль или наблюдение. Что не работает? Какой паттерн заметили?
-1-2 абзаца.]
+[Specific pain point or observation. What's not working? What pattern did you notice?
+1-2 paragraphs.]
 
-## Контекст
+## Context
 
-[Почему это важно? Почему это сложно? Какие ограничения?
-1-3 абзаца. Можно с примерами.]
+[Why is it important? Why is it hard? What are the constraints?
+1-3 paragraphs. Can include examples.]
 
-## Решение
+## Solution
 
-[Практический подход. Как решить? Какой паттерн использовать?
-Код примеры если уместно. 2-4 абзаца.]
+[Practical approach. How to solve it? What pattern to use?
+Code examples if appropriate. 2-4 paragraphs.]
 
-## Инсайт
+## Insight
 
-[Что изменилось в понимании? Как это меняет подход?
-1-2 абзаца.]
+[What changed in understanding? How does it change the approach?
+1-2 paragraphs.]
 
-## Источники
+## Sources
 
-- [Название источника](url)
+- [Source title](url)
 ```
 
-## Пример готовой статьи
+## Ready Article Example
 
 ```markdown
 ---
-title: "Context Engineering: первые шаги"
-description: "Введение в context engineering — подход к структурированию информации для LLM. Практические инсайты из первых экспериментов."
+title: "Context Engineering: First Steps"
+description: "Introduction to context engineering — an approach to structuring information for LLMs. Practical insights from first experiments."
 date: 2024-12-20
 tags: ["context-engineering", "llm", "anthropic"]
 lang: ru
 ---
 
-## Проблема
+## Problem
 
-Промпты перестали работать стабильно. Один и тот же промпт даёт разные результаты в зависимости от контекста. Добавление деталей в инструкции только ухудшает ситуацию.
+Prompts stopped working reliably. The same prompt gives different results depending on context. Adding details to instructions only makes things worse.
 
-## Контекст
+## Context
 
-Prompt engineering фокусируется на формулировке запроса. Но модель принимает решения на основе всего контекста: системного промпта, истории, документов.
+Prompt engineering focuses on formulating the request. But the model makes decisions based on the entire context: system prompt, history, documents.
 
-Context engineering — это инженерный подход к организации всей этой информации:
-- Что включить в контекст
-- В каком порядке
-- Как структурировать
+Context engineering is an engineering approach to organizing all this information:
+- What to include in context
+- In what order
+- How to structure it
 
-Это похоже на разницу между "написать хорошее письмо" и "построить систему коммуникации".
+It's like the difference between "write a good letter" and "build a communication system."
 
-## Решение
+## Solution
 
-Вместо улучшения промпта — структурируем контекст:
+Instead of improving the prompt — structure the context:
 
-1. **Инструкции** — краткие, без повторений
-2. **Данные** — релевантные, с метаданными
-3. **Примеры** — конкретные, не абстрактные
-4. **Constraints** — явные ограничения
+1. **Instructions** — brief, no repetition
+2. **Data** — relevant, with metadata
+3. **Examples** — specific, not abstract
+4. **Constraints** — explicit limitations
 
-Порядок важен: модель "забывает" начало длинного контекста.
-Критичную информацию — в начало и конец.
+Order matters: the model "forgets" the beginning of long context.
+Critical information — at the beginning and end.
 
-## Инсайт
+## Insight
 
-Context engineering — это не про LLM. Это про организацию информации.
-Те же принципы работают для людей: структура помогает понять.
+Context engineering isn't about LLMs. It's about organizing information.
+The same principles work for humans: structure helps understanding.
 
-Разница: у LLM нет "здравого смысла" для восполнения пробелов.
-Всё должно быть явным.
+The difference: LLMs have no "common sense" to fill gaps.
+Everything must be explicit.
 
-## Источники
+## Sources
 
 - [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
 - [Anthropic: Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)

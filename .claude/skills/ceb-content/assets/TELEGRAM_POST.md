@@ -1,93 +1,93 @@
 # Telegram Post Template
 
-## Структура
+## Structure
 
 ```
-[Крючок — проблема или наблюдение, 1-2 строки]
+[Hook — problem or observation, 1-2 lines]
 
-[Контекст — почему это важно, 1-3 строки]
+[Context — why it matters, 1-3 lines]
 
-[Решение или инсайт, 1-3 строки]
+[Solution or insight, 1-3 lines]
 
-[Вывод — что изменилось, 1-2 строки]
+[Conclusion — what changed, 1-2 lines]
 
-#contextengineering #[тематический-хештег]
+#contextengineering #[topic-hashtag]
 ```
 
-## Примеры готовых постов
+## Ready Post Examples
 
-### Пример 1: Наблюдение
+### Example 1: Observation
 
 ```
-Prompt engineering — это маркетинг.
-Context engineering — это продукт.
+Prompt engineering is marketing.
+Context engineering is product.
 
-Разница: промпт пытается "уговорить" модель.
-Контекст даёт модели всё нужное для работы.
+The difference: a prompt tries to "convince" the model.
+Context gives the model everything it needs to work.
 
-Первый подход хрупкий.
-Второй — масштабируется.
+The first approach is fragile.
+The second — scales.
 
 #contextengineering #llm
 ```
 
-### Пример 2: Практический инсайт
+### Example 2: Practical Insight
 
 ```
-Потратил день на отладку промпта.
-Проблема была не в промпте.
+Spent a day debugging a prompt.
+The problem wasn't the prompt.
 
-Модель не знала контекст проекта:
-какие файлы есть, какие зависимости.
+The model didn't know project context:
+what files exist, what dependencies.
 
-Добавил структуру репозитория в контекст.
-Промпт стал в 3 раза короче.
-Результат — стабильнее.
+Added repository structure to context.
+Prompt became 3x shorter.
+Result — more stable.
 
 #contextengineering #debugging
 ```
 
-### Пример 3: Гипотеза
+### Example 3: Hypothesis
 
 ```
-Не уверен, что большие контекстные окна — панацея.
+Not sure large context windows are a panacea.
 
-100K токенов звучит много.
-Но если контекст неструктурирован —
-модель теряется так же, как человек в длинном документе.
+100K tokens sounds like a lot.
+But if context is unstructured —
+the model gets lost just like a human in a long document.
 
-Гипотеза: структура важнее объёма.
-Буду проверять.
+Hypothesis: structure matters more than volume.
+Will be testing.
 
 #contextengineering #hypothesis
 ```
 
-### Пример 4: Ссылка на ресурс
+### Example 4: Resource Link
 
 ```
-Anthropic выпустили гайд по context engineering.
+Anthropic released a guide on context engineering.
 
-Ключевой инсайт: контекст — это не промпт.
-Это система управления информацией для LLM.
+Key insight: context is not a prompt.
+It's an information management system for LLMs.
 
-Включает: инструкции, данные, примеры, constraints.
-Порядок и структура влияют на результат.
+Includes: instructions, data, examples, constraints.
+Order and structure affect the result.
 
-Ссылка в комментариях.
+Link in comments.
 
 #contextengineering #anthropic
 ```
 
-### Пример 5: Короткий инсайт
+### Example 5: Short Insight
 
 ```
-Меньше промпта — лучше результат.
+Less prompt — better result.
 
-Парадокс: чем подробнее объясняешь задачу,
-тем хуже модель её понимает.
+Paradox: the more you explain the task,
+the worse the model understands it.
 
-Причина: шум забивает сигнал.
-Решение: структурированный контекст вместо длинных инструкций.
+Reason: noise drowns the signal.
+Solution: structured context instead of long instructions.
 
 #contextengineering #prompts
 ```

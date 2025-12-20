@@ -1,64 +1,64 @@
 # Blog Platform Guide — Russian
 
-## Формат
+## Format
 
-- Структурированная статья с заголовками (## и ###)
-- 500-1500 слов
-- Примеры кода где уместно
-- Ссылки на источники
+- Structured article with headers (## and ###)
+- 500-1500 words
+- Code examples where appropriate
+- Source links
 
 ## Frontmatter
 
 ```yaml
 ---
-title: "Заголовок статьи"
-description: "SEO описание, 1-2 предложения"
+title: "Article Title"
+description: "SEO description, 1-2 sentences"
 date: YYYY-MM-DD
-tags: ["context-engineering", "тема"]
+tags: ["context-engineering", "topic"]
 lang: ru
 ---
 ```
 
-## Структура статьи
+## Article Structure
 
 ```markdown
-## Проблема
+## Problem
 
-Конкретная боль или наблюдение.
-Что не работает? Какой паттерн заметили?
+Specific pain point or observation.
+What's not working? What pattern did you notice?
 
-## Контекст
+## Context
 
-Почему это важно? Почему это сложно?
-Какие ограничения?
+Why is it important? Why is it hard?
+What are the constraints?
 
-## Решение
+## Solution
 
-Практический подход. Как решить?
-Код примеры, если уместно.
+Practical approach. How to solve it?
+Code examples if appropriate.
 
-## Инсайт
+## Insight
 
-Что изменилось в понимании?
-Как это меняет подход?
+What changed in understanding?
+How does it change the approach?
 
-## Источники
+## Sources
 
-- [Название](url)
+- [Title](url)
 ```
 
-## Тон
+## Tone
 
-- Технический, но доступный
-- Глубже чем Telegram, но без воды
-- С примерами кода где уместно
-- Ссылки на источники
+- Technical, but accessible
+- Deeper than Telegram, but no fluff
+- With code examples where appropriate
+- Links to sources
 
-## Код примеры
+## Code Examples
 
 ````markdown
 ```typescript
-// Пример хорошего кода с комментариями
+// Example of good code with comments
 const context = buildContext({
   files: getRelevantFiles(),
   schema: loadSchema(),
@@ -66,17 +66,17 @@ const context = buildContext({
 ```
 ````
 
-## Запрещено
+## Prohibited
 
-- Мотивационный тон
-- Clickbait заголовки
-- Подпись автора в конце
-- Пустые абзацы ("Давайте разберёмся...")
+- Motivational tone
+- Clickbait headlines
+- Author signature at the end
+- Empty paragraphs ("Let's figure this out...")
 
-## Чек-лист перед публикацией
+## Pre-publication Checklist
 
-- [ ] Есть все 4 секции (Проблема, Контекст, Решение, Инсайт)?
-- [ ] Frontmatter заполнен корректно?
-- [ ] Код примеры работают?
-- [ ] Ссылки валидны?
-- [ ] Нет мотивационного тона?
+- [ ] All 4 sections present (Problem, Context, Solution, Insight)?
+- [ ] Frontmatter filled correctly?
+- [ ] Code examples work?
+- [ ] Links valid?
+- [ ] No motivational tone?

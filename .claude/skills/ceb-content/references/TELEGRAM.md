@@ -1,92 +1,92 @@
 # Telegram Platform Guide
 
-**Канал**: @ctxtdev
+**Channel**: @ctxtdev
 
-## Формат
+## Format
 
-- 3-7 коротких абзацев по 1-3 строки
-- Чистый текст, минимум форматирования
-- Эмодзи только для акцентов (1-2 max на пост)
-- Хештеги в конце
-- Длина: 15-60 секунд чтения (200-800 символов)
+- 3-7 short paragraphs, 1-3 lines each
+- Plain text, minimal formatting
+- Emoji only for emphasis (1-2 max per post)
+- Hashtags at the end
+- Length: 15-60 seconds reading time (200-800 characters)
 
-## Тон
+## Tone
 
-- Уверенный, но не менторский
-- Технический, но доступный
-- Практичный: конкретика > абстракция
-- Честный: сомнения озвучиваем
+- Confident, but not preachy
+- Technical, but accessible
+- Practical: specifics > abstractions
+- Honest: voice doubts openly
 
-## Структура поста
+## Post Structure
 
 ```
-[Крючок — проблема или наблюдение]
+[Hook — problem or observation]
 
-[Контекст — почему это важно]
+[Context — why it matters]
 
-[Решение или инсайт]
+[Solution or insight]
 
-[Вывод или следующий шаг]
+[Conclusion or next step]
 
 #contextengineering #llm
 ```
 
-## Типы постов
+## Post Types
 
-1. **Наблюдение** — что заметил, без выводов
-2. **Инсайт** — что понял нового
-3. **Практика** — как решил конкретную задачу
-4. **Гипотеза** — что думаю, но не уверен
-5. **Ссылка** — интересный ресурс + мой комментарий
+1. **Observation** — what you noticed, without conclusions
+2. **Insight** — what you understood
+3. **Practice** — how you solved a specific problem
+4. **Hypothesis** — what you think, but aren't sure about
+5. **Link** — interesting resource + your commentary
 
-## Запрещено
+## Prohibited
 
-- Чрезмерные эмодзи
-- Bullet-списки (визуальный шум в TG)
-- Подпись автора
-- CTA ("подписывайтесь!")
-- Bold/italic форматирование
-- Длинные абзацы (>3 строки)
+- Excessive emoji
+- Bullet lists (visual noise in TG)
+- Author signature
+- CTA ("subscribe!")
+- Bold/italic formatting
+- Long paragraphs (>3 lines)
 
-## Примеры
+## Examples
 
-### Хороший пост
+### Good Post
 
 ```
-Prompt engineering — это маркетинг.
-Context engineering — это продукт.
+Prompt engineering is marketing.
+Context engineering is product.
 
-Разница: промпт пытается "уговорить" модель.
-Контекст даёт модели всё нужное для работы.
+The difference: a prompt tries to "convince" the model.
+Context gives the model everything it needs to work.
 
-Первый подход хрупкий.
-Второй — масштабируется.
+The first approach is fragile.
+The second — scales.
 
 #contextengineering #llm
 ```
 
-### Плохой пост
+### Bad Post
 
 ```
-🚀🔥 ВАЖНЫЙ ИНСАЙТ! 🔥🚀
+🚀🔥 IMPORTANT INSIGHT! 🔥🚀
 
-Сегодня я понял кое-что НЕВЕРОЯТНОЕ о context engineering!
+Today I realized something INCREDIBLE about context engineering!
 
-• Пункт 1
-• Пункт 2
-• Пункт 3
+• Point 1
+• Point 2
+• Point 3
 
-Подписывайтесь, чтобы не пропустить!
+Subscribe to not miss out!
 
-— Автор
+— Author
 ```
 
-## Хештеги
+## Hashtags
 
-Обязательные:
+Required:
 - `#contextengineering`
 
-Опциональные (по теме):
+Optional (by topic):
 - `#llm`
 - `#ai`
 - `#anthropic`

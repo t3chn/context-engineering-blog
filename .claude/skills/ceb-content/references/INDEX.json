@@ -2,7 +2,7 @@
   "name": "Context Engineering Blog Style",
   "version": "1.0.0",
   "philosophy": "Context-First Thinking",
-  "tldr": "Формат: Проблема → Контекст → Решение → Инсайт. Telegram: чистый текст + минимум эмодзи. Без подписи.",
+  "tldr": "Format: Problem → Context → Solution → Insight. Telegram: plain text + minimal emoji. No signature.",
 
   "sections": [
     { "id": "core", "title": "Style Guide", "path": "STYLE_GUIDE.md", "type": "philosophy" },
@@ -28,18 +28,18 @@
   },
 
   "invariants": [
-    "Формат: Проблема → Контекст → Решение → Инсайт",
-    "Telegram: чистый текст + минимум эмодзи",
-    "Без подписи автора",
-    "Хештеги в конце (#contextengineering #llm)",
-    "Честная неопределённость"
+    "Format: Problem → Context → Solution → Insight",
+    "Telegram: plain text + minimal emoji",
+    "No author signature",
+    "Hashtags at the end (#contextengineering #llm)",
+    "Honest uncertainty"
   ],
 
   "prohibited": [
-    "Чрезмерные эмодзи",
-    "Мотивационный тон",
-    "Советы без контекста",
-    "Подпись автора",
+    "Excessive emoji",
+    "Motivational tone",
+    "Advice without context",
+    "Author signature",
     "CTA"
   ]
 }

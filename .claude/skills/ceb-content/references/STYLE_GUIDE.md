@@ -1,109 +1,109 @@
 # Context-First Thinking — Style Guide
 
-## Философия
+## Philosophy
 
-Context engineering — это не prompt engineering с большим контекстным окном.
-Это инженерная дисциплина: как структурировать информацию для LLM.
+Context engineering is not prompt engineering with a larger context window.
+It's an engineering discipline: how to structure information for LLMs.
 
-**Наш подход**: делиться практическими инсайтами, а не абстрактными теориями.
+**Our approach**: share practical insights, not abstract theories.
 
-## Структура контента
+## Content Structure
 
-### 4 элемента каждого поста
+### 4 Elements of Every Post
 
-1. **Проблема** — конкретная боль или наблюдение
-   - Что не работает?
-   - Какой паттерн заметили?
+1. **Problem** — specific pain point or observation
+   - What's not working?
+   - What pattern did you notice?
 
-2. **Контекст** — почему это важно
-   - Почему это сложно?
-   - Какие ограничения?
+2. **Context** — why it matters
+   - Why is it hard?
+   - What are the constraints?
 
-3. **Решение** — практический подход
-   - Как решить?
-   - Какой паттерн использовать?
+3. **Solution** — practical approach
+   - How to solve it?
+   - What pattern to use?
 
-4. **Инсайт** — что изменилось в понимании
-   - Что нового узнали?
-   - Как это меняет подход?
+4. **Insight** — what changed in understanding
+   - What new thing did you learn?
+   - How does it change the approach?
 
-## Тон голоса
+## Voice Tone
 
-**Да:**
-- Технический, но доступный
-- Уверенный, но не менторский
-- Практичный: конкретика > абстракция
-- Честный: сомнения озвучиваем
+**Yes:**
+- Technical but accessible
+- Confident but not preachy
+- Practical: specifics > abstractions
+- Honest: voice doubts openly
 
-**Нет:**
-- Мотивационный ("Вы тоже можете!")
-- Рекламный ("Лучший способ!")
-- Снисходительный ("Просто сделайте...")
-- Неуверенный без причины
+**No:**
+- Motivational ("You can do it too!")
+- Promotional ("The best way!")
+- Condescending ("Just do...")
+- Uncertain without reason
 
-## Язык
+## Language
 
-- **Основной**: русский
-- **Технические термины**: на английском (context engineering, prompt, LLM)
-- **Хештеги**: #contextengineering #llm #ai (всегда на английском)
+- **Primary**: Russian
+- **Technical terms**: in English (context engineering, prompt, LLM)
+- **Hashtags**: #contextengineering #llm #ai (always in English)
 
-## Честная неопределённость
+## Honest Uncertainty
 
-Если не уверен — скажи прямо:
-
-```
-✓ "Это работает в 80% случаев, но есть нюансы..."
-✓ "Пока не понял до конца, но гипотеза такая..."
-✓ "Нужно больше данных, но похоже на..."
-
-✗ "Всегда делайте так!"
-✗ "Это единственный правильный способ"
-```
-
-## Примеры хороших постов
-
-### Пример 1: Наблюдение
+If unsure — say it directly:
 
 ```
-Prompt engineering — это маркетинг.
-Context engineering — это продукт.
+✓ "This works in 80% of cases, but there are nuances..."
+✓ "Haven't fully understood yet, but hypothesis is..."
+✓ "Need more data, but looks like..."
 
-Разница: промпт пытается "уговорить" модель.
-Контекст даёт модели всё нужное для работы.
+✗ "Always do it this way!"
+✗ "This is the only correct approach"
+```
 
-Первый подход хрупкий.
-Второй — масштабируется.
+## Good Post Examples
+
+### Example 1: Observation
+
+```
+Prompt engineering is marketing.
+Context engineering is product.
+
+The difference: a prompt tries to "convince" the model.
+Context gives the model everything it needs to work.
+
+The first approach is fragile.
+The second — scales.
 
 #contextengineering #llm
 ```
 
-### Пример 2: Практический инсайт
+### Example 2: Practical Insight
 
 ```
-Потратил день на отладку промпта.
-Проблема была не в промпте.
+Spent a day debugging a prompt.
+The problem wasn't in the prompt.
 
-Модель не знала контекст проекта:
-какие файлы есть, какие зависимости.
+The model didn't know project context:
+what files exist, what dependencies.
 
-Добавил структуру репозитория в контекст.
-Промпт стал в 3 раза короче.
-Результат — стабильнее.
+Added repository structure to context.
+Prompt became 3x shorter.
+Result — more stable.
 
 #contextengineering #debugging
 ```
 
-### Пример 3: Сомнение
+### Example 3: Doubt
 
 ```
-Не уверен, что большие контекстные окна — панацея.
+Not sure large context windows are a panacea.
 
-100K токенов звучит много.
-Но если контекст неструктурирован —
-модель теряется так же, как человек в длинном документе.
+100K tokens sounds like a lot.
+But if context is unstructured —
+the model gets lost just like a human in a long document.
 
-Гипотеза: структура важнее объёма.
-Буду проверять.
+Hypothesis: structure matters more than volume.
+Will be testing.
 
 #contextengineering #hypothesis
 ```

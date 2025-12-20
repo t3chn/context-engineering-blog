@@ -4,93 +4,93 @@
 
 ## Beads Workflow
 
-При старте сессии используй скилл `beads-workflow` для:
-1. `bd list --status in_progress` — показать текущую задачу
-2. `bd ready` — если нет in_progress, выбрать из ready
-3. Отслеживать прогресс через TodoWrite
-4. При завершении — `bd close <id>` с причиной
+On session start, use `beads-workflow` skill:
+1. `bd list --status in_progress` — show current task
+2. `bd ready` — if no in_progress, pick from ready
+3. Track progress via TodoWrite
+4. On completion — `bd close <id>` with reason
 
 ## Project Overview
 
-Автоматизированная система для ведения блога и Telegram канала о context engineering.
+Automated system for running a blog and Telegram channel about context engineering.
 
-**Основной workflow:**
+**Main workflow:**
 ```
-Ссылки + заметки → CLI (интерактив) → AI обработка →
-  → Пост для Telegram (RU короткий)
-  → Статья для блога (RU + EN полная)
+Links + notes → CLI (interactive) → AI processing →
+  → Telegram post (RU, short)
+  → Blog article (RU + EN, full)
   → Auto-commit & push
-  → [--publish] Публикация в Telegram
+  → [--publish] Publish to Telegram
 ```
 
-## Структура проекта
+## Project Structure
 
 ```
 context-engineering-blog/
 ├── .beads/                      # Task tracking
-├── CLAUDE.md                    # AI context (этот файл)
+├── CLAUDE.md                    # AI context (this file)
 ├── apps/
-│   ├── blog/                    # Astro сайт
-│   │   ├── src/content/posts/   # Посты (ru/, en/)
+│   ├── blog/                    # Astro site
+│   │   ├── src/content/posts/   # Posts (ru/, en/)
 │   │   └── astro.config.mjs
-│   └── cli/                     # CLI инструмент
+│   └── cli/                     # CLI tool
 │       ├── src/
-│       │   ├── prompts/         # Системные промпты
-│       │   ├── providers/       # AI провайдеры (claude, openai, gemini)
-│       │   ├── generators/      # Генераторы контента
-│       │   └── publishers/      # Публикация в TG
+│       │   ├── prompts/         # System prompts
+│       │   ├── providers/       # AI providers (claude, openai, gemini)
+│       │   ├── generators/      # Content generators
+│       │   └── publishers/      # TG publishing
 │       └── package.json
-├── packages/shared/             # Общие типы
+├── packages/shared/             # Shared types
 ├── .env.example
 └── pnpm-workspace.yaml
 ```
 
-## Технологии
+## Tech Stack
 
-- **Блог**: Astro 4 + Tailwind CSS + MDX
+- **Blog**: Astro 4 + Tailwind CSS + MDX
 - **CLI**: TypeScript + Node.js + Commander + Inquirer
-- **AI**: Claude / OpenAI / Gemini (выбор через конфиг)
+- **AI**: Claude / OpenAI / Gemini (configurable)
 - **Telegram**: grammy
 - **Monorepo**: pnpm workspaces
 
 ## Content Philosophy: Context-First Thinking
 
-**Формат**: Проблема → Контекст → Решение → Инсайт
+**Format**: Problem → Context → Solution → Insight
 
-Каждый пост отвечает на 4 вопроса:
-1. **Проблема** — что не работает?
-2. **Контекст** — почему это важно/сложно?
-3. **Решение** — как подойти?
-4. **Инсайт** — что изменилось в понимании?
+Every post answers 4 questions:
+1. **Problem** — what's not working?
+2. **Context** — why is it important/hard?
+3. **Solution** — how to approach it?
+4. **Insight** — what changed in understanding?
 
 **Skill**: `.claude/skills/ceb-content/SKILL.md`
 
 ### Telegram Posts (@ctxtdev)
-- 3-7 коротких абзацев по 1-3 строки
-- Чистый текст + минимум эмодзи (max 1-2)
-- Хештеги в конце (#contextengineering #llm)
-- БЕЗ подписи автора
-- БЕЗ bullet-списков
-- БЕЗ мотивационного тона
+- 3-7 short paragraphs, 1-3 lines each
+- Plain text + minimal emoji (max 1-2)
+- Hashtags at the end (#contextengineering #llm)
+- NO author signature
+- NO bullet lists
+- NO motivational tone
 
 ### Blog Articles
-- Структурированные статьи: Проблема → Контекст → Решение → Инсайт
-- RU основной → EN перевод
-- 500-1500 слов
-- Код примеры где уместно
-- Ссылки на источники в конце
+- Structured articles: Problem → Context → Solution → Insight
+- RU primary → EN translation
+- 500-1500 words
+- Code examples where appropriate
+- Source links at the end
 
 ## Key Files
 
-| Файл | Назначение |
-|------|------------|
-| `.claude/skills/ceb-content/SKILL.md` | Skill для генерации контента |
-| `.claude/skills/ceb-content/references/` | Гайды по стилю и платформам |
-| `apps/cli/src/prompts/telegram.ts` | Промпт для генерации TG постов |
-| `apps/cli/src/prompts/blog.ts` | Промпт для генерации статей |
-| `apps/cli/src/providers/` | AI провайдеры |
-| `apps/blog/src/content/posts/` | Markdown посты |
-| `.env` | API ключи (НЕ коммитить!) |
+| File | Purpose |
+|------|---------|
+| `.claude/skills/ceb-content/SKILL.md` | Content generation skill |
+| `.claude/skills/ceb-content/references/` | Style and platform guides |
+| `apps/cli/src/prompts/telegram.ts` | TG post generation prompt |
+| `apps/cli/src/prompts/blog.ts` | Article generation prompt |
+| `apps/cli/src/providers/` | AI providers |
+| `apps/blog/src/content/posts/` | Markdown posts |
+| `.env` | API keys (DO NOT commit!) |
 
 ## Deployment
 
@@ -99,19 +99,19 @@ context-engineering-blog/
 - **Cloudflare**: https://ctxt-dev-35d.pages.dev
 - **GitHub**: https://github.com/t3chn/context-engineering-blog
 
-### Автодеплой
-Каждый push в `main` автоматически деплоит на Cloudflare Pages через GitHub Actions.
+### Auto-deploy
+Every push to `main` automatically deploys to Cloudflare Pages via GitHub Actions.
 
 ```bash
-# Ручной деплой (если нужно)
+# Manual deploy (if needed)
 pnpm --filter @ceb/blog build
 wrangler pages deploy apps/blog/dist --project-name=ctxt-dev
 ```
 
 ### GitHub Secrets (Settings → Secrets → Actions)
-| Secret | Описание |
-|--------|----------|
-| `CLOUDFLARE_API_TOKEN` | API токен с правами Pages |
+| Secret | Description |
+|--------|-------------|
+| `CLOUDFLARE_API_TOKEN` | API token with Pages permissions |
 | `CLOUDFLARE_ACCOUNT_ID` | `6745078205fd18255ccc6dd791de78cb` |
 
 ### Cloudflare Pages
@@ -119,55 +119,55 @@ wrangler pages deploy apps/blog/dist --project-name=ctxt-dev
 - **Account**: inskricion@gmail.com
 - **Dashboard**: https://dash.cloudflare.com → Pages → ctxt-dev
 
-### Добавление нового домена
-1. Cloudflare API или Dashboard → Pages → ctxt-dev → Custom domains
-2. Добавить DNS запись:
+### Adding a New Domain
+1. Cloudflare API or Dashboard → Pages → ctxt-dev → Custom domains
+2. Add DNS record:
    ```
    Type: CNAME
-   Name: @ (или subdomain)
+   Name: @ (or subdomain)
    Target: ctxt-dev-35d.pages.dev
    Proxy: On
    ```
 
-### Создание API токена Cloudflare
+### Creating Cloudflare API Token
 1. https://dash.cloudflare.com/profile/api-tokens
 2. Create Token → "Edit Cloudflare Workers" template
 3. Permissions: Account/Cloudflare Pages/Edit
-4. Добавить в GitHub: `gh secret set CLOUDFLARE_API_TOKEN`
+4. Add to GitHub: `gh secret set CLOUDFLARE_API_TOKEN`
 
 ## Security
 
-### Защита от утечки секретов
-- **Pre-commit hook**: `.husky/pre-commit` — блокирует коммиты с API ключами
-- **CI**: `gitleaks-action` сканирует на каждый push
-- **gitignore**: `.env`, `.env.local` исключены
+### Secret Leak Protection
+- **Pre-commit hook**: `.husky/pre-commit` — blocks commits with API keys
+- **CI**: `gitleaks-action` scans on every push
+- **gitignore**: `.env`, `.env.local` excluded
 
-### Паттерны секретов (блокируются)
+### Secret Patterns (blocked)
 - `sk-ant-*` (Anthropic)
 - `sk-*` (OpenAI)
 - `AIza*` (Google)
 - Telegram bot tokens
 - AWS/GitHub tokens
 
-### Если секрет утёк
-1. Немедленно ротировать ключ в соответствующем сервисе
-2. Проверить git history: `git log -p --all -S 'SECRET_PATTERN'`
-3. Если в истории — использовать `git filter-branch` или BFG Repo-Cleaner
+### If a Secret Leaks
+1. Immediately rotate the key in the respective service
+2. Check git history: `git log -p --all -S 'SECRET_PATTERN'`
+3. If in history — use `git filter-branch` or BFG Repo-Cleaner
 
 ## Conventions
 
-- Язык кода: TypeScript (strict mode)
-- Стиль: ESLint + Prettier
-- Коммиты: Conventional Commits (`feat:`, `fix:`, `post:`)
-- Ветки: main (production), feature/* (разработка)
+- Code language: TypeScript (strict mode)
+- Style: ESLint + Prettier
+- Commits: Conventional Commits (`feat:`, `fix:`, `post:`)
+- Branches: main (production), feature/* (development)
 
 ## Skills Reference
 
-| Задача | Skill |
-|--------|-------|
-| **Генерация контента** | `.claude/skills/ceb-content` |
+| Task | Skill |
+|------|-------|
+| **Content generation** | `.claude/skills/ceb-content` |
 | Frontend/Astro | `vibe-coder:frontend-design` |
-| CLI разработка | `vibe-coder:cli-tool` |
-| Telegram бот | `vibe-coder:telegram-bot` |
+| CLI development | `vibe-coder:cli-tool` |
+| Telegram bot | `vibe-coder:telegram-bot` |
 | Code review | `vibe-coder:code-review` |
-| Тестирование | `vibe-coder:testing-core` |
+| Testing | `vibe-coder:testing-core` |

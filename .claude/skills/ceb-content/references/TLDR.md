@@ -1,16 +1,16 @@
 # Context-First Thinking — TL;DR
 
-**Формат**: Проблема → Контекст → Решение → Инсайт
+**Format**: Problem → Context → Solution → Insight
 
 **Telegram** (@ctxtdev):
-- Чистый текст + минимум эмодзи (1-2 max)
-- 3-7 коротких абзацев
-- Хештеги в конце
-- Без подписи
+- Plain text + minimal emoji (1-2 max)
+- 3-7 short paragraphs
+- Hashtags at the end
+- No signature
 
-**Блог**:
-- Структурированные статьи с ##
-- RU основной → EN перевод
-- 500-1500 слов
+**Blog**:
+- Structured articles with ##
+- RU primary → EN translation
+- 500-1500 words
 
-**Тон**: технический, честный, практичный — без мотивации и советов.
+**Tone**: technical, honest, practical — no motivation or advice.
