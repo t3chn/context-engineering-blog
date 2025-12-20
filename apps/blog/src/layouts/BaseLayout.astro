@@ -1,4 +1,6 @@
 ---
+import "@/styles/global.css";
+
 interface Props {
   title: string;
   description?: string;
@@ -6,40 +8,172 @@ interface Props {
 }
 
 const { title, description = "Context Engineering Blog", lang = "ru" } = Astro.props;
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
+    <title>{title} | ctxt.dev</title>
+
+    <!-- Preload fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Theme script - runs before render to prevent flash -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+          return localStorage.getItem("theme");
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      })();
+
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
   </head>
-  <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
-    <header class="border-b border-gray-200 bg-white">
-      <nav class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-        <a href="/" class="text-xl font-bold text-primary-600">Context Engineering</a>
+
+  <body class="min-h-screen flex flex-col noise relative">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/95 backdrop-blur-sm">
+      <nav class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <!-- Logo -->
+        <a
+          href={lang === "en" ? "/en" : "/"}
+          class="group flex items-center gap-2 focus-ring rounded-md"
+        >
+          <span class="font-mono text-lg font-semibold tracking-tight text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent)]">
+            ctxt<span class="text-[var(--color-accent)]">.</span>dev
+          </span>
+        </a>
+
+        <!-- Right side: Lang + Theme -->
         <div class="flex items-center gap-4">
-          <a href="/posts" class="text-gray-600 hover:text-primary-600">Posts</a>
-          <div class="flex gap-2">
-            <a href="/" class={lang === "ru" ? "font-bold" : "text-gray-400"}>RU</a>
-            <span class="text-gray-300">/</span>
-            <a href="/en" class={lang === "en" ? "font-bold" : "text-gray-400"}>EN</a>
+          <!-- Language switcher -->
+          <div class="flex items-center gap-1 text-sm font-mono">
+            <a
+              href="/"
+              class:list={[
+                "px-2 py-1 rounded transition-colors focus-ring",
+                lang === "ru"
+                  ? "text-[var(--color-accent)] bg-accent-500/10"
+                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+              ]}
+            >
+              RU
+            </a>
+            <span class="text-surface-300 dark:text-surface-600">/</span>
+            <a
+              href="/en"
+              class:list={[
+                "px-2 py-1 rounded transition-colors focus-ring",
+                lang === "en"
+                  ? "text-[var(--color-accent)] bg-accent-500/10"
+                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+              ]}
+            >
+              EN
+            </a>
           </div>
+
+          <!-- Theme toggle -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors focus-ring"
+            aria-label="Toggle theme"
+          >
+            <!-- Sun icon (shown in dark mode) -->
+            <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            </svg>
+            <!-- Moon icon (shown in light mode) -->
+            <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            </svg>
+          </button>
         </div>
       </nav>
     </header>
 
-    <main class="mx-auto max-w-4xl px-4 py-8">
-      <slot />
+    <!-- Main content -->
+    <main class="flex-1">
+      <div class="mx-auto max-w-5xl px-6 py-12">
+        <slot />
+      </div>
     </main>
 
-    <footer class="border-t border-gray-200 bg-white">
-      <div class="mx-auto max-w-4xl px-4 py-6 text-center text-sm text-gray-500">
-        Context Engineering Blog &copy; {new Date().getFullYear()}
+    <!-- Footer -->
+    <footer class="border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+      <div class="mx-auto max-w-5xl px-6 py-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <!-- Left: Copyright -->
+          <p class="text-sm text-[var(--color-text-secondary)] font-mono">
+            &copy; {new Date().getFullYear()} ctxt.dev
+          </p>
+
+          <!-- Right: Links -->
+          <div class="flex items-center gap-6">
+            <a
+              href="https://t.me/ctxtdev"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors flex items-center gap-1.5"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+              </svg>
+              @ctxtdev
+            </a>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors flex items-center gap-1.5"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              GitHub
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
+
+    <!-- Theme toggle script -->
+    <script>
+      const toggle = document.getElementById("theme-toggle");
+
+      toggle?.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.contains("dark");
+
+        if (isDark) {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        } else {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        }
+      });
+
+      // Listen for system theme changes
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        if (!localStorage.getItem("theme")) {
+          if (e.matches) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+        }
+      });
+    </script>
   </body>
 </html>

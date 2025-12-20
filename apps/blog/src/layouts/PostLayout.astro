@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -11,30 +12,175 @@ const { title, description, date, tags, lang } = post.data;
 
 const formattedDate = new Intl.DateTimeFormat(lang === "ru" ? "ru-RU" : "en-US", {
   year: "numeric",
-  month: "long",
+  month: "short",
   day: "numeric",
 }).format(date);
+
+// Get all posts for navigation
+const allPosts = await getCollection("posts", ({ data }) => data.lang === lang && !data.draft);
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const currentIndex = sortedPosts.findIndex((p) => p.id === post.id);
+const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+
+const basePath = lang === "en" ? "/en" : "";
 ---
 
 <BaseLayout title={title} description={description} lang={lang}>
-  <article class="prose prose-lg mx-auto">
-    <header class="mb-8 text-center not-prose">
-      <time class="text-sm text-gray-500" datetime={date.toISOString()}>
-        {formattedDate}
-      </time>
-      <h1 class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">{title}</h1>
-      <p class="mt-4 text-lg text-gray-600">{description}</p>
-      <div class="mt-4 flex flex-wrap justify-center gap-2">
-        {
-          tags.map((tag) => (
-            <span class="rounded-full bg-primary-100 px-3 py-1 text-sm text-primary-700">
+  <div class="lg:grid lg:grid-cols-[1fr_280px] lg:gap-12">
+    <!-- Main Content -->
+    <article class="min-w-0">
+      <!-- Header -->
+      <header class="mb-10 animate-fade-in">
+        <div class="mb-4 flex items-center gap-3">
+          <a
+            href={basePath || "/"}
+            class="inline-flex items-center gap-1 font-mono text-sm text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-accent)]"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            {lang === "ru" ? "Все посты" : "All posts"}
+          </a>
+          <span class="text-[var(--color-border)]">/</span>
+          <time class="font-mono text-sm text-[var(--color-text-secondary)]" datetime={date.toISOString()}>
+            {formattedDate}
+          </time>
+        </div>
+
+        <h1 class="text-3xl font-bold tracking-tight text-[var(--color-text)] sm:text-4xl">
+          {title}
+        </h1>
+
+        <p class="mt-4 text-lg leading-relaxed text-[var(--color-text-secondary)]">
+          {description}
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span class="rounded-full bg-accent-500/10 px-3 py-1 font-mono text-sm text-[var(--color-accent)]">
               #{tag}
             </span>
-          ))
-        }
-      </div>
-    </header>
+          ))}
+        </div>
+      </header>
 
-    <slot />
-  </article>
+      <!-- Article Content -->
+      <div class="prose prose-lg max-w-none dark:prose-invert prose-headings:font-mono prose-headings:tracking-tight prose-a:text-[var(--color-accent)] prose-a:no-underline hover:prose-a:underline prose-code:rounded prose-code:bg-surface-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-surface-800 prose-pre:bg-surface-900 dark:prose-pre:bg-surface-950 prose-img:rounded-lg">
+        <slot />
+      </div>
+
+      <!-- Navigation -->
+      <nav class="mt-16 border-t border-[var(--color-border)] pt-8">
+        <div class="grid gap-4 sm:grid-cols-2">
+          {prevPost && (
+            <a
+              href={`${basePath}/posts/${prevPost.id}`}
+              class="group flex flex-col rounded-lg border border-[var(--color-border)] p-4 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)]"
+            >
+              <span class="mb-1 font-mono text-xs text-[var(--color-text-secondary)]">
+                {lang === "ru" ? "Предыдущий" : "Previous"}
+              </span>
+              <span class="text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent)]">
+                {prevPost.data.title}
+              </span>
+            </a>
+          )}
+          {nextPost && (
+            <a
+              href={`${basePath}/posts/${nextPost.id}`}
+              class="group flex flex-col rounded-lg border border-[var(--color-border)] p-4 text-right transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)] sm:col-start-2"
+            >
+              <span class="mb-1 font-mono text-xs text-[var(--color-text-secondary)]">
+                {lang === "ru" ? "Следующий" : "Next"}
+              </span>
+              <span class="text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent)]">
+                {nextPost.data.title}
+              </span>
+            </a>
+          )}
+        </div>
+      </nav>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="hidden lg:block">
+      <div class="sticky top-24">
+        <!-- Table of Contents -->
+        <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-5">
+          <h3 class="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
+            {lang === "ru" ? "Содержание" : "On this page"}
+          </h3>
+          <nav id="toc" class="space-y-2 text-sm">
+            <p class="text-[var(--color-text-secondary)] italic" id="toc-loading">
+              {lang === "ru" ? "Загрузка..." : "Loading..."}
+            </p>
+          </nav>
+        </div>
+
+        <!-- Telegram CTA -->
+        <div class="mt-6 rounded-lg border border-[var(--color-border)] p-5">
+          <p class="mb-3 font-mono text-xs text-[var(--color-text-secondary)]">
+            {lang === "ru" ? "Обсуждение" : "Discussion"}
+          </p>
+          <a
+            href="https://t.me/ctxtdev"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-accent)] px-4 py-2.5 font-mono text-sm font-medium text-white transition-all hover:bg-[var(--color-accent-hover)] hover:shadow-lg hover:shadow-accent-500/25"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+            @ctxtdev
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- TOC Script using safe DOM methods -->
+  <script>
+    function buildTOC() {
+      const article = document.querySelector('article');
+      const toc = document.getElementById('toc');
+      const loading = document.getElementById('toc-loading');
+      if (!article || !toc) return;
+
+      const headings = article.querySelectorAll('h2, h3');
+
+      if (headings.length === 0) {
+        if (loading) {
+          loading.textContent = 'Нет заголовков';
+        }
+        return;
+      }
+
+      // Remove loading text
+      if (loading) {
+        loading.remove();
+      }
+
+      // Build TOC using safe DOM methods
+      headings.forEach((heading, i) => {
+        const id = heading.id || `heading-${i}`;
+        if (!heading.id) heading.id = id;
+
+        const link = document.createElement('a');
+        link.href = `#${id}`;
+        link.textContent = heading.textContent || '';
+        link.className = 'block py-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors';
+
+        if (heading.tagName === 'H3') {
+          link.classList.add('pl-3');
+        }
+
+        toc.appendChild(link);
+      });
+    }
+
+    // Run on load and after Astro navigation
+    buildTOC();
+    document.addEventListener('astro:after-swap', buildTOC);
+  </script>
 </BaseLayout>
