@@ -1,0 +1,45 @@
+{
+  "name": "Context Engineering Blog Style",
+  "version": "1.0.0",
+  "philosophy": "Context-First Thinking",
+  "tldr": "Формат: Проблема → Контекст → Решение → Инсайт. Telegram: чистый текст + минимум эмодзи. Без подписи.",
+
+  "sections": [
+    { "id": "core", "title": "Style Guide", "path": "STYLE_GUIDE.md", "type": "philosophy" },
+    { "id": "rules", "title": "Agent Rules", "path": "AGENT_RULES.md", "type": "rules" },
+    { "id": "telegram", "title": "Telegram", "path": "TELEGRAM.md", "type": "platform" },
+    { "id": "blog_ru", "title": "Blog RU", "path": "BLOG_RU.md", "type": "platform" },
+    { "id": "blog_en", "title": "Blog EN", "path": "BLOG_EN.md", "type": "platform" }
+  ],
+
+  "tasks": {
+    "telegram_post": {
+      "load": ["core", "telegram"],
+      "description": "Generate Telegram post in Russian"
+    },
+    "blog_ru": {
+      "load": ["core", "blog_ru"],
+      "description": "Generate blog article in Russian"
+    },
+    "blog_en": {
+      "load": ["core", "blog_en"],
+      "description": "Translate blog article to English"
+    }
+  },
+
+  "invariants": [
+    "Формат: Проблема → Контекст → Решение → Инсайт",
+    "Telegram: чистый текст + минимум эмодзи",
+    "Без подписи автора",
+    "Хештеги в конце (#contextengineering #llm)",
+    "Честная неопределённость"
+  ],
+
+  "prohibited": [
+    "Чрезмерные эмодзи",
+    "Мотивационный тон",
+    "Советы без контекста",
+    "Подпись автора",
+    "CTA"
+  ]
+}

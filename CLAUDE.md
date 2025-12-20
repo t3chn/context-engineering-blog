@@ -53,26 +53,39 @@ context-engineering-blog/
 - **Telegram**: grammy
 - **Monorepo**: pnpm workspaces
 
-## Content Generation Rules
+## Content Philosophy: Context-First Thinking
 
-### Telegram Posts (RU)
-- Короткие инсайты (1-3 абзаца, max 4096 символов)
-- Нативный стиль для TG
-- Эмодзи уместно, но без перебора
-- Хештеги в конце (#contextengineering #llm #ai)
-- Ссылка на полную статью в блоге
+**Формат**: Проблема → Контекст → Решение → Инсайт
+
+Каждый пост отвечает на 4 вопроса:
+1. **Проблема** — что не работает?
+2. **Контекст** — почему это важно/сложно?
+3. **Решение** — как подойти?
+4. **Инсайт** — что изменилось в понимании?
+
+**Skill**: `.claude/skills/ceb-content/SKILL.md`
+
+### Telegram Posts (@ctxtdev)
+- 3-7 коротких абзацев по 1-3 строки
+- Чистый текст + минимум эмодзи (max 1-2)
+- Хештеги в конце (#contextengineering #llm)
+- БЕЗ подписи автора
+- БЕЗ bullet-списков
+- БЕЗ мотивационного тона
 
 ### Blog Articles
-- Структурированные статьи с заголовками
-- RU основной язык → EN перевод
-- Frontmatter: title, date, tags, description, lang
+- Структурированные статьи: Проблема → Контекст → Решение → Инсайт
+- RU основной → EN перевод
+- 500-1500 слов
 - Код примеры где уместно
-- Ссылки на источники
+- Ссылки на источники в конце
 
 ## Key Files
 
 | Файл | Назначение |
 |------|------------|
+| `.claude/skills/ceb-content/SKILL.md` | Skill для генерации контента |
+| `.claude/skills/ceb-content/references/` | Гайды по стилю и платформам |
 | `apps/cli/src/prompts/telegram.ts` | Промпт для генерации TG постов |
 | `apps/cli/src/prompts/blog.ts` | Промпт для генерации статей |
 | `apps/cli/src/providers/` | AI провайдеры |
@@ -90,6 +103,7 @@ context-engineering-blog/
 
 | Задача | Skill |
 |--------|-------|
+| **Генерация контента** | `.claude/skills/ceb-content` |
 | Frontend/Astro | `vibe-coder:frontend-design` |
 | CLI разработка | `vibe-coder:cli-tool` |
 | Telegram бот | `vibe-coder:telegram-bot` |
