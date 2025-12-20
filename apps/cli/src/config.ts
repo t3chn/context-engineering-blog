@@ -1,7 +1,10 @@
 import { config as dotenvConfig } from "dotenv";
+import { resolve } from "path";
 import type { AIProvider, Config } from "@ceb/shared";
 
-dotenvConfig();
+// Load .env from monorepo root
+dotenvConfig({ path: resolve(process.cwd(), ".env") });
+dotenvConfig({ path: resolve(process.cwd(), "../../.env") }); // fallback for cli dir
 
 function getEnv(key: string, defaultValue?: string): string {
   const value = process.env[key];

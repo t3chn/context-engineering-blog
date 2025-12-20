@@ -87,8 +87,9 @@ program
       console.log(telegramPost);
       console.log("\n-----------------------------\n");
 
-      // Save files
-      const blogDir = path.resolve(process.cwd(), "apps/blog/src/content/posts");
+      // Save files - resolve from monorepo root
+      const monorepoRoot = path.resolve(import.meta.dirname, "../../..");
+      const blogDir = path.join(monorepoRoot, "apps/blog/src/content/posts");
       const ruDir = path.join(blogDir, "ru");
       const enDir = path.join(blogDir, "en");
 
