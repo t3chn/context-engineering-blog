@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "cli": "pnpm --filter @ceb/cli run start",
     "blog:dev": "pnpm --filter @ceb/blog run dev",
-    "blog:build": "pnpm --filter @ceb/blog run build"
+    "blog:build": "pnpm --filter @ceb/blog run build",
+    "prepare": "git config core.hooksPath .husky"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
