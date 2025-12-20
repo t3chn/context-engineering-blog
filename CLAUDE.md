@@ -2,13 +2,31 @@
 
 > Created: 2025-12-20
 
+## AI Memory System
+
+> **CRITICAL**: Read `.claude/memory/INDEX.md` at every session start.
+
+The project uses an AI-persistent memory system for decisions and context:
+
+```
+.claude/memory/
+├── INDEX.md              # Read first! Memory index
+├── decisions/            # Design decisions (permanent)
+│   └── video-shorts-pipeline.md
+└── context/              # Config state (changeable)
+    └── elevenlabs-setup.md (after setup)
+```
+
+**After significant work**: Update relevant memory files to persist decisions.
+
 ## Beads Workflow
 
-On session start, use `beads-workflow` skill:
-1. `bd list --status in_progress` — show current task
-2. `bd ready` — if no in_progress, pick from ready
-3. Track progress via TodoWrite
-4. On completion — `bd close <id>` with reason
+On session start:
+1. Read `.claude/memory/INDEX.md`
+2. `bd list --status in_progress` — show current task
+3. `bd ready` — if no in_progress, pick from ready
+4. Track progress via TodoWrite
+5. On completion — `bd close <id>` with reason
 
 ## Project Overview
 
@@ -80,12 +98,37 @@ Every post answers 4 questions:
 - Code examples where appropriate
 - Source links at the end
 
+### Video Shorts (In Development)
+
+Automated video generation from Telegram posts.
+
+**Pipeline**: Text → Script (Claude) → Voice (ElevenLabs) → Video (Remotion) → MP4
+
+**Key decisions**:
+- Format: Kinetic typography (no stock footage)
+- Voice: ElevenLabs voice clone (user's voice)
+- Quality: Premium from day 1
+
+**Documentation**:
+- Feature: `docs/features/video-shorts.md`
+- Decision: `.claude/memory/decisions/video-shorts-pipeline.md`
+- ADR: `docs/architecture/decisions/0001-video-kinetic-typography.md`
+- Skill: `.claude/skills/ceb-video/` (planned)
+
+**CLI** (planned):
+```bash
+pnpm cli video -i "post text" -l ru -f shorts
+```
+
 ## Key Files
 
 | File | Purpose |
 |------|---------|
+| `.claude/memory/INDEX.md` | AI memory index (read first!) |
+| `.claude/memory/decisions/` | Design decisions |
 | `.claude/skills/ceb-content/SKILL.md` | Content generation skill |
 | `.claude/skills/ceb-content/references/` | Style and platform guides |
+| `docs/` | Human-readable documentation |
 | `apps/cli/src/prompts/telegram.ts` | TG post generation prompt |
 | `apps/cli/src/prompts/blog.ts` | Article generation prompt |
 | `apps/cli/src/providers/` | AI providers |
@@ -166,6 +209,7 @@ wrangler pages deploy apps/blog/dist --project-name=ctxt-dev
 | Task | Skill |
 |------|-------|
 | **Content generation** | `.claude/skills/ceb-content` |
+| **Video shorts** | `.claude/skills/ceb-video` (planned) |
 | Frontend/Astro | `vibe-coder:frontend-design` |
 | CLI development | `vibe-coder:cli-tool` |
 | Telegram bot | `vibe-coder:telegram-bot` |
