@@ -1,0 +1,40 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { title, description, date, tags, lang } = post.data;
+
+const formattedDate = new Intl.DateTimeFormat(lang === "ru" ? "ru-RU" : "en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+}).format(date);
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+  <article class="prose prose-lg mx-auto">
+    <header class="mb-8 text-center not-prose">
+      <time class="text-sm text-gray-500" datetime={date.toISOString()}>
+        {formattedDate}
+      </time>
+      <h1 class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">{title}</h1>
+      <p class="mt-4 text-lg text-gray-600">{description}</p>
+      <div class="mt-4 flex flex-wrap justify-center gap-2">
+        {
+          tags.map((tag) => (
+            <span class="rounded-full bg-primary-100 px-3 py-1 text-sm text-primary-700">
+              #{tag}
+            </span>
+          ))
+        }
+      </div>
+    </header>
+
+    <slot />
+  </article>
+</BaseLayout>
