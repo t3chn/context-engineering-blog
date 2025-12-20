@@ -3,7 +3,7 @@ import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  site: "https://context-engineering.blog", // Update with your domain
+  site: "https://ctxt.dev",
   integrations: [mdx(), tailwind()],
   i18n: {
     defaultLocale: "ru",
