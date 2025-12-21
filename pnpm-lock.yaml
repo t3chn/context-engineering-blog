@@ -91,6 +91,9 @@ importers:
       '@ceb/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@ceb/video-pipeline':
+        specifier: workspace:*
+        version: link:../../packages/video-pipeline
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.3

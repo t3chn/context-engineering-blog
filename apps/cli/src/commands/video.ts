@@ -6,12 +6,14 @@
 import { Command } from "commander";
 import { input, confirm } from "@inquirer/prompts";
 import { writeFile, mkdir } from "fs/promises";
+import { spawnSync } from "child_process";
 import path from "path";
 import {
   prepareComposition,
   getElevenLabsConfigFromEnv,
   saveAudioToFile,
   generateSimpleScript,
+  translateText,
   type VideoFormat,
   type VideoLanguage,
   VIDEO_FORMATS,
@@ -25,6 +27,7 @@ export const videoCommand = new Command("video")
   .option("-o, --output <path>", "Output path for video")
   .option("--preview", "Preview mode - prepare composition data only")
   .option("--audio-only", "Generate audio file only (skip video rendering)")
+  .option("--translate", "Also generate translated version (ru→en or en→ru)")
   .action(async (options) => {
     try {
       console.log("\n🎬 Video Shorts Generator\n");
@@ -113,10 +116,25 @@ export const videoCommand = new Command("video")
         await saveAudioToFile(compositionData.voice.audioBase64, audioPath);
         console.log(`\n✓ Audio saved: ${audioPath}`);
 
-        // Save composition data as JSON
-        const dataPath = path.join(outputDir, "preview-data.json");
-        await writeFile(dataPath, JSON.stringify(compositionData, null, 2));
-        console.log(`✓ Data saved: ${dataPath}`);
+        // Save Remotion-compatible props
+        const remotionProps = {
+          words: compositionData.voice.wordTimestamps,
+          keyPhrases: compositionData.script.segments
+            .filter((s) => s.isKeyPhrase)
+            .map((s) => s.text),
+          theme: {
+            backgroundColor: "#0a0a0a",
+            textColor: "#ffffff",
+            accentColor: "#3b82f6",
+            fontFamily: "Inter, system-ui, sans-serif",
+            fontWeight: 400,
+            emphasisFontWeight: 700,
+          },
+          audioSrc: "http://localhost:3000/generated/preview-audio.mp3",
+        };
+        const propsPath = path.join(outputDir, "preview-props.json");
+        await writeFile(propsPath, JSON.stringify(remotionProps, null, 2));
+        console.log(`✓ Props saved: ${propsPath}`);
 
         console.log("\n🎬 To preview in Remotion Studio:");
         console.log("   cd apps/video && pnpm studio");
@@ -124,19 +142,122 @@ export const videoCommand = new Command("video")
       }
 
       // Full render
-      const audioPath = path.join(outputDir, `audio-${Date.now()}.mp3`);
+      const timestamp = Date.now();
+      const audioPath = path.join(outputDir, `audio-${timestamp}.mp3`);
       await saveAudioToFile(compositionData.voice.audioBase64, audioPath);
 
-      const dataPath = path.join(outputDir, `data-${Date.now()}.json`);
-      await writeFile(dataPath, JSON.stringify(compositionData, null, 2));
+      // Create Remotion-compatible props
+      const remotionProps = {
+        words: compositionData.voice.wordTimestamps,
+        keyPhrases: compositionData.script.segments
+          .filter((s) => s.isKeyPhrase)
+          .map((s) => s.text),
+        theme: {
+          backgroundColor: "#0a0a0a",
+          textColor: "#ffffff",
+          accentColor: "#3b82f6",
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontWeight: 400,
+          emphasisFontWeight: 700,
+        },
+        audioSrc: `generated/audio-${timestamp}.mp3`,
+      };
+      const propsPath = path.join(outputDir, `props-${timestamp}.json`);
+      await writeFile(propsPath, JSON.stringify(remotionProps, null, 2));
 
       console.log(`\n✓ Audio: ${audioPath}`);
-      console.log(`✓ Data: ${dataPath}`);
+      console.log(`✓ Props: ${propsPath}`);
 
-      console.log("\n🎬 To render video:");
-      console.log(`   cd apps/video`);
-      console.log(`   pnpm studio  # Preview first`);
-      console.log(`   pnpm render KineticTypography out/video.mp4 --props="${dataPath}"`);
+      // Determine output path
+      const videoDir = path.join(monorepoRoot, "apps/video");
+      const outputPath = options.output || path.join(videoDir, "out", `video-${timestamp}.mp4`);
+      await mkdir(path.dirname(outputPath), { recursive: true });
+
+      console.log("\n🎬 Rendering video...\n");
+
+      // Run Remotion render using spawnSync (safe, no shell injection)
+      const propsRelative = path.relative(videoDir, propsPath);
+      const outputRelative = path.relative(videoDir, outputPath);
+
+      const result = spawnSync("pnpm", [
+        "render",
+        "KineticTypography",
+        outputRelative,
+        `--props=${propsRelative}`,
+      ], {
+        cwd: videoDir,
+        stdio: "inherit",
+      });
+
+      if (result.status === 0) {
+        console.log(`\n✅ Video ready: ${outputPath}`);
+      } else {
+        console.error("\n❌ Render failed. Try manually:");
+        console.log(`   cd apps/video`);
+        console.log(`   pnpm render KineticTypography "${outputRelative}" --props="${propsRelative}"`);
+        process.exit(1);
+      }
+
+      // Generate translated version if requested
+      if (options.translate) {
+        const targetLang: VideoLanguage = language === "ru" ? "en" : "ru";
+        console.log(`\n🌐 Translating to ${targetLang.toUpperCase()}...`);
+
+        const translatedText = await translateText(text, language, targetLang);
+        console.log(`✓ Translated: ${translatedText.substring(0, 50)}...`);
+
+        // Generate translated video
+        const translatedTimestamp = Date.now();
+        const translatedComposition = await prepareComposition(
+          { text: translatedText, language: targetLang, format },
+          elevenLabsConfig
+        );
+
+        console.log(`✓ Voice synthesized (${translatedComposition.voice.durationSeconds.toFixed(1)}s)`);
+
+        const translatedAudioPath = path.join(outputDir, `audio-${translatedTimestamp}-${targetLang}.mp3`);
+        await saveAudioToFile(translatedComposition.voice.audioBase64, translatedAudioPath);
+
+        const translatedProps = {
+          words: translatedComposition.voice.wordTimestamps,
+          keyPhrases: translatedComposition.script.segments
+            .filter((s) => s.isKeyPhrase)
+            .map((s) => s.text),
+          theme: {
+            backgroundColor: "#0a0a0a",
+            textColor: "#ffffff",
+            accentColor: "#3b82f6",
+            fontFamily: "Inter, system-ui, sans-serif",
+            fontWeight: 400,
+            emphasisFontWeight: 700,
+          },
+          audioSrc: `generated/audio-${translatedTimestamp}-${targetLang}.mp3`,
+        };
+        const translatedPropsPath = path.join(outputDir, `props-${translatedTimestamp}-${targetLang}.json`);
+        await writeFile(translatedPropsPath, JSON.stringify(translatedProps, null, 2));
+
+        const translatedOutputPath = path.join(videoDir, "out", `video-${translatedTimestamp}-${targetLang}.mp4`);
+        const translatedPropsRelative = path.relative(videoDir, translatedPropsPath);
+        const translatedOutputRelative = path.relative(videoDir, translatedOutputPath);
+
+        console.log(`\n🎬 Rendering ${targetLang.toUpperCase()} video...\n`);
+
+        const translatedResult = spawnSync("pnpm", [
+          "render",
+          "KineticTypography",
+          translatedOutputRelative,
+          `--props=${translatedPropsRelative}`,
+        ], {
+          cwd: videoDir,
+          stdio: "inherit",
+        });
+
+        if (translatedResult.status === 0) {
+          console.log(`\n✅ ${targetLang.toUpperCase()} video ready: ${translatedOutputPath}`);
+        } else {
+          console.error(`\n⚠️ ${targetLang.toUpperCase()} render failed`);
+        }
+      }
 
       console.log("\n✅ Готово!\n");
     } catch (error) {

@@ -1,7 +1,7 @@
 # Decision: Video Shorts Pipeline
 
 > Created: 2025-12-20
-> Status: Approved, Implementation in progress
+> Status: Implemented
 
 ## Context
 
@@ -124,11 +124,11 @@ apps/cli/src/commands/
 
 ## Success Metrics
 
-- [ ] Generate MP4 from text input
-- [ ] Voice sounds natural (user's voice)
-- [ ] Animations are smooth and professional
-- [ ] End-to-end time < 5 minutes per video
-- [ ] Output ready for direct upload
+- [x] Generate MP4 from text input
+- [x] Voice sounds natural (user's voice)
+- [x] Animations are smooth and professional
+- [x] End-to-end time < 5 minutes per video
+- [x] Output ready for direct upload
 
 ## Implementation Timeline
 

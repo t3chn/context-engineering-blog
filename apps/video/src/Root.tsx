@@ -5,6 +5,8 @@ import {
   type KineticTypographyProps,
 } from "./compositions/KineticTypography";
 
+const FPS = 30;
+
 const defaultProps: KineticTypographyProps = {
   words: [
     { word: "Context", startTime: 0, endTime: 0.5, charIndex: 0 },
@@ -29,16 +31,26 @@ const defaultProps: KineticTypographyProps = {
   },
 };
 
+// Calculate duration from props
+const calculateDuration = (props: KineticTypographyProps): number => {
+  if (props.words.length === 0) return 150;
+  const lastWord = props.words[props.words.length - 1];
+  // Add 1 second buffer after last word
+  return Math.ceil((lastWord.endTime + 1) * FPS);
+};
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition
         id="KineticTypography"
         component={KineticTypography}
-        durationInFrames={150}
-        fps={30}
-        width={1080}
-        height={1920}
+        calculateMetadata={({ props }) => ({
+          durationInFrames: calculateDuration(props),
+          fps: FPS,
+          width: 1080,
+          height: 1920,
+        })}
         schema={kineticTypographySchema}
         defaultProps={defaultProps}
       />

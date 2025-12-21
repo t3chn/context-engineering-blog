@@ -1,4 +1,4 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, Easing } from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, Easing, Audio, staticFile } from "remotion";
 import { z } from "zod";
 import { AnimatedWord } from "../components/AnimatedWord";
 
@@ -32,6 +32,7 @@ export const KineticTypography: React.FC<KineticTypographyProps> = ({
   words,
   keyPhrases,
   theme,
+  audioSrc,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -59,6 +60,9 @@ export const KineticTypography: React.FC<KineticTypographyProps> = ({
         opacity: bgOpacity,
       }}
     >
+      {/* Audio track */}
+      {audioSrc && <Audio src={audioSrc.startsWith('http') ? audioSrc : staticFile(audioSrc)} />}
+
       {/* Gradient overlay */}
       <div
         style={{

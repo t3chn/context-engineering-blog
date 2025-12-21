@@ -32,7 +32,7 @@ export {
 } from "./elevenlabs.js";
 
 // Script Generator
-export { generateScript, generateSimpleScript } from "./script-generator.js";
+export { generateScript, generateSimpleScript, translateText } from "./script-generator.js";
 
 // Pipeline functions
 import type {

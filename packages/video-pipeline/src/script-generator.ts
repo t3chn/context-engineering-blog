@@ -101,6 +101,42 @@ export async function generateScript(
 }
 
 /**
+ * Translates text from one language to another
+ */
+export async function translateText(
+  text: string,
+  fromLang: VideoLanguage,
+  toLang: VideoLanguage,
+  apiKey?: string
+): Promise<string> {
+  if (fromLang === toLang) return text;
+
+  const client = new Anthropic({
+    apiKey: apiKey || process.env.ANTHROPIC_API_KEY,
+  });
+
+  const langNames = { ru: "Russian", en: "English" };
+
+  const response = await client.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 2048,
+    messages: [
+      {
+        role: "user",
+        content: `Translate the following text from ${langNames[fromLang]} to ${langNames[toLang]}. Keep the same tone and style. Only return the translated text, nothing else.\n\nText:\n${text}`,
+      },
+    ],
+  });
+
+  const content = response.content[0];
+  if (content.type !== "text") {
+    throw new Error("Unexpected response type from Claude");
+  }
+
+  return content.text.trim();
+}
+
+/**
  * Simple script generation without AI (fallback)
  * Splits text into sentences, marks first and last as key phrases
  */

@@ -1,65 +1,41 @@
 # AI Memory Index
 
-> **CRITICAL**: Read this file at every session start.
-> Last updated: 2025-12-21
+> **Read this file at every session start**
+
+## Active Decisions
+
+- [Video Shorts Pipeline](decisions/video-shorts-pipeline.md) — kinetic typography, ElevenLabs, Remotion
+- [Bun Runtime](decisions/adr-0002-bun-runtime.md) — native TypeScript execution
+
+## Context (Current State)
+
+- [ElevenLabs Setup](context/elevenlabs-setup.md) — voice clone config
 
 ## Quick Reference
 
 | Key | Value |
 |-----|-------|
-| **Runtime** | Bun (1.1.45+) |
-| Primary language | RU |
-| Secondary language | EN (translation) |
-| Voice provider | ElevenLabs (voice clone) |
-| Video composition | Remotion (`bunx remotionb`) |
-| Telegram channel | @ctxtdev |
-| Blog URL | https://ctxt.dev |
+| Voice ID | `HWXiZb49yQCdHTLArDVC` |
+| Voice Model | `eleven_multilingual_v2` |
+| Primary Language | RU |
+| Video Format | 1080x1920 (shorts) |
+| FPS | 30 |
 
-## Active Features
+## Video Pipeline
 
-### Content Generation
-- Skill: `.claude/skills/ceb-content/`
-- CLI: `pnpm cli` (interactive)
-- Platforms: Telegram (RU), Blog (RU/EN)
+```bash
+# Generate video from text
+pnpm cli video -i "text" -l ru --preview
 
-### Video Shorts (In Development)
-- Decision: [video-shorts-pipeline](decisions/video-shorts-pipeline.md)
-- Context: [elevenlabs-setup](context/elevenlabs-setup.md) (after setup)
-- Skill: `.claude/skills/ceb-video/` (planned)
-
-## Session Checklist
-
-Before starting work:
-- [ ] Read this INDEX.md
-- [ ] Check `bd ready` for pending tasks
-- [ ] Review relevant decision files if modifying features
-
-After completing work:
-- [ ] Update relevant memory files if decisions changed
-- [ ] Run `bd sync` to commit task changes
-- [ ] Push to remote
-
-## Documentation Map
-
-```
-.claude/
-├── memory/
-│   ├── INDEX.md          ← YOU ARE HERE
-│   ├── decisions/        ← Design decisions (permanent)
-│   └── context/          ← Config state (changeable)
-├── skills/
-│   ├── ceb-content/      ← Content generation
-│   └── ceb-video/        ← Video shorts (planned)
-
-docs/
-├── README.md             ← Human documentation hub
-├── features/             ← Feature documentation
-└── architecture/         ← ADRs and system design
+# Render with audio
+cd apps/video
+pnpm render KineticTypography out/video.mp4 --props="public/generated/render-props.json"
 ```
 
-## Principles
+## Packages
 
-1. **Document before building** — decisions in memory/, ADRs in docs/
-2. **Quality first** — premium tools over cheap alternatives
-3. **Context-First Thinking** — Problem → Context → Solution → Insight
-4. **Persistence** — all decisions documented for future sessions
+| Package | Purpose |
+|---------|---------|
+| `@ceb/video-pipeline` | ElevenLabs TTS, script generation |
+| `@ceb/video` | Remotion compositions |
+| `@ceb/cli` | CLI commands including `video` |

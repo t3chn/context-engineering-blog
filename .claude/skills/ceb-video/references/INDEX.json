@@ -1,0 +1,10 @@
+{
+  "name": "ceb-video-references",
+  "description": "Reference materials for video generation",
+  "files": [
+    {
+      "name": "KINETIC_TYPOGRAPHY.md",
+      "description": "Animation patterns and timing guidelines"
+    }
+  ]
+}
