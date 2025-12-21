@@ -11,6 +11,7 @@ import { generateTelegramPost } from "./generators/telegram.js";
 import { generateBlogArticles } from "./generators/blog.js";
 import { publishToTelegram } from "./publishers/telegram.js";
 import { autoCommitAndPush } from "./git.js";
+import { videoCommand } from "./commands/video.js";
 
 const program = new Command();
 
@@ -155,5 +156,8 @@ ${blogArticles.en.content}`;
       process.exit(1);
     }
   });
+
+// Add subcommands
+program.addCommand(videoCommand);
 
 program.parse();
