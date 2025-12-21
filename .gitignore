@@ -35,3 +35,5 @@ coverage/
 # Temp files
 *.tmp
 *.temp
+apps/video/out/
+apps/video/public/generated/

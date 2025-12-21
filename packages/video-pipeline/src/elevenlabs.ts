@@ -18,6 +18,51 @@ const DEFAULT_CONFIG = {
 } as const;
 
 /**
+ * Pronunciation map for Russian TTS
+ * Converts English terms to Cyrillic phonetic spelling
+ */
+const RU_PRONUNCIATION_MAP: Record<string, string> = {
+  "Context Engineering": "Контекст Инжиниринг",
+  "Context": "Контекст",
+  "Engineering": "Инжиниринг",
+  "Prompt": "Промпт",
+  "AI": "Эй-Ай",
+  "LLM": "Эл-Эл-Эм",
+  "API": "Эй-Пи-Ай",
+};
+
+// Reverse mapping for display (Cyrillic word → Original)
+const RU_DISPLAY_MAP: Record<string, string> = {
+  "Контекст": "Context",
+  "Инжиниринг": "Engineering",
+  "Промпт": "Prompt",
+  "Эй-Ай": "AI",
+  "Эл-Эл-Эм": "LLM",
+  "Эй-Пи-Ай": "API",
+};
+
+/**
+ * Applies pronunciation fixes for Russian TTS
+ * Replaces English terms with Cyrillic phonetic equivalents
+ */
+function applyRuPronunciation(text: string): string {
+  let result = text;
+  // Apply longer phrases first to avoid partial replacements
+  const sortedKeys = Object.keys(RU_PRONUNCIATION_MAP).sort((a, b) => b.length - a.length);
+  for (const key of sortedKeys) {
+    result = result.replace(new RegExp(key, "gi"), RU_PRONUNCIATION_MAP[key]);
+  }
+  return result;
+}
+
+/**
+ * Converts Cyrillic pronunciation words back to original English for display
+ */
+function reverseRuPronunciation(word: string): string {
+  return RU_DISPLAY_MAP[word] || word;
+}
+
+/**
  * Creates an ElevenLabs client with the provided configuration
  */
 export function createElevenLabsClient(config: ElevenLabsConfig) {
@@ -89,17 +134,22 @@ function characterTimestampsToWords(
 
 /**
  * Synthesizes speech from text with timestamps
+ * @param language - Optional language for pronunciation fixes ('ru' applies Cyrillic phonetics)
  */
 export async function synthesizeSpeech(
   text: string,
-  config: ElevenLabsConfig
+  config: ElevenLabsConfig,
+  language?: "ru" | "en"
 ): Promise<VoiceSynthesisResult> {
   const { client, config: fullConfig } = createElevenLabsClient(config);
+
+  // Apply pronunciation fixes for Russian
+  const processedText = language === "ru" ? applyRuPronunciation(text) : text;
 
   const response = await client.textToSpeech.convertWithTimestamps(
     fullConfig.voiceId,
     {
-      text,
+      text: processedText,
       modelId: fullConfig.modelId,
     }
   );
@@ -125,7 +175,16 @@ export async function synthesizeSpeech(
     end_time: ct.endTime,
   }));
 
-  const wordTimestamps = characterTimestampsToWords(text, rawCharTimestamps);
+  // Use processedText for word extraction (matches what ElevenLabs received)
+  const rawWordTimestamps = characterTimestampsToWords(processedText, rawCharTimestamps);
+
+  // For Russian, convert Cyrillic words back to original English for display
+  const wordTimestamps = language === "ru"
+    ? rawWordTimestamps.map(wt => ({
+        ...wt,
+        word: reverseRuPronunciation(wt.word),
+      }))
+    : rawWordTimestamps;
 
   const durationSeconds =
     characterTimestamps.length > 0

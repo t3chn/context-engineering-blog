@@ -11,7 +11,9 @@
   "dependencies": {
     "@ceb/video-pipeline": "workspace:*",
     "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.394",
     "@remotion/media": "^4.0.0",
+    "@remotion/media-utils": "^4.0.394",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "^4.0.0",

@@ -34,6 +34,19 @@ export {
 // Script Generator
 export { generateScript, generateSimpleScript, translateText } from "./script-generator.js";
 
+// HeyGen
+export {
+  createHeyGenClient,
+  getHeyGenConfigFromEnv,
+  uploadAudioToPublicHost,
+  DEFAULT_AVATARS,
+  type HeyGenConfig,
+  type HeyGenAvatarConfig,
+  type HeyGenVideoRequest,
+  type HeyGenVideoResponse,
+  type HeyGenAvatar,
+} from "./heygen.js";
+
 // Pipeline functions
 import type {
   VideoInput,
@@ -61,8 +74,8 @@ export async function prepareComposition(
     options.anthropicApiKey
   );
 
-  // Synthesize voice with timestamps
-  const voice = await synthesizeSpeech(script.fullText, elevenLabsConfig);
+  // Synthesize voice with timestamps (pass language for pronunciation fixes)
+  const voice = await synthesizeSpeech(script.fullText, elevenLabsConfig, input.language);
 
   // Calculate duration in frames
   const durationInFrames = Math.ceil(voice.durationSeconds * fps);
@@ -79,10 +92,18 @@ export async function prepareComposition(
 
 /**
  * Gets ElevenLabs config from environment variables
+ * @param language - Optional language to select voice (uses ELEVENLABS_VOICE_ID_EN for 'en')
  */
-export function getElevenLabsConfigFromEnv(): ElevenLabsConfig {
+export function getElevenLabsConfigFromEnv(language?: "ru" | "en"): ElevenLabsConfig {
   const apiKey = process.env.ELEVENLABS_API_KEY;
-  const voiceId = process.env.ELEVENLABS_VOICE_ID;
+
+  // Use language-specific voice if available
+  let voiceId: string | undefined;
+  if (language === "en" && process.env.ELEVENLABS_VOICE_ID_EN) {
+    voiceId = process.env.ELEVENLABS_VOICE_ID_EN;
+  } else {
+    voiceId = process.env.ELEVENLABS_VOICE_ID;
+  }
 
   if (!apiKey) {
     throw new Error("ELEVENLABS_API_KEY environment variable is required");

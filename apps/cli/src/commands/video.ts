@@ -48,10 +48,10 @@ export const videoCommand = new Command("video")
       console.log(`🌐 Language: ${language}`);
       console.log(`📐 Format: ${format} (${VIDEO_FORMATS[format].width}x${VIDEO_FORMATS[format].height})`);
 
-      // Check ElevenLabs config
+      // Check ElevenLabs config (pass language for voice selection)
       let elevenLabsConfig;
       try {
-        elevenLabsConfig = getElevenLabsConfigFromEnv();
+        elevenLabsConfig = getElevenLabsConfigFromEnv(language);
         console.log("✓ ElevenLabs configured");
       } catch (error) {
         console.log("⚠️  ElevenLabs not configured - using simple script mode");
@@ -206,11 +206,14 @@ export const videoCommand = new Command("video")
         const translatedText = await translateText(text, language, targetLang);
         console.log(`✓ Translated: ${translatedText.substring(0, 50)}...`);
 
+        // Get voice config for target language (uses native voice if available)
+        const translatedElevenLabsConfig = getElevenLabsConfigFromEnv(targetLang);
+
         // Generate translated video
         const translatedTimestamp = Date.now();
         const translatedComposition = await prepareComposition(
           { text: translatedText, language: targetLang, format },
-          elevenLabsConfig
+          translatedElevenLabsConfig
         );
 
         console.log(`✓ Voice synthesized (${translatedComposition.voice.durationSeconds.toFixed(1)}s)`);
