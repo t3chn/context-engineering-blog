@@ -47,6 +47,7 @@ We use Architecture Decision Records (ADRs) to document significant decisions.
 | ADR | Decision |
 |-----|----------|
 | [0001](architecture/decisions/0001-video-kinetic-typography.md) | Video format: kinetic typography |
+| [0002](architecture/decisions/0002-bun-runtime.md) | Runtime: Bun over Node.js |
 
 ## Contributing
 

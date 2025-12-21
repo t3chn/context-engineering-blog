@@ -56,6 +56,7 @@ Telegram Post
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
+| Runtime | Bun 1.1.45+ | Native TypeScript, fast startup |
 | CLI | Commander.js | User interface |
 | Script Generator | Claude API | Extract key phrases |
 | Voice Synthesis | ElevenLabs | Text-to-speech with timestamps |
@@ -117,16 +118,19 @@ apps/video/
 
 ```bash
 # Generate video from text
-pnpm cli video -i "Prompt engineering — это маркетинг..."
+bun cli video -i "Prompt engineering — это маркетинг..."
 
 # Specify language
-pnpm cli video -i "text" -l ru
+bun cli video -i "text" -l ru
 
 # Preview in Remotion Studio
-pnpm cli video -i "text" --preview
+bun cli video -i "text" --preview
 
 # Output to specific path
-pnpm cli video -i "text" -o ./output/video.mp4
+bun cli video -i "text" -o ./output/video.mp4
+
+# Remotion studio (development)
+bunx remotionb studio apps/video
 ```
 
 ## Configuration
@@ -161,4 +165,5 @@ interface VideoConfig {
 
 - Decision: [.claude/memory/decisions/video-shorts-pipeline.md](../../.claude/memory/decisions/video-shorts-pipeline.md)
 - ADR: [../architecture/decisions/0001-video-kinetic-typography.md](../architecture/decisions/0001-video-kinetic-typography.md)
+- ADR: [../architecture/decisions/0002-bun-runtime.md](../architecture/decisions/0002-bun-runtime.md)
 - Skill: `.claude/skills/ceb-video/` (planned)

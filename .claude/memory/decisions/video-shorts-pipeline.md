@@ -25,6 +25,7 @@ How to automate video creation from Telegram posts while maintaining high qualit
 
 | Component | Choice | Rationale |
 |-----------|--------|-----------|
+| **Runtime** | Bun (1.1.45+) | Native TypeScript, faster startup, simpler toolchain |
 | **Voice** | ElevenLabs voice clone | User's voice, best quality, automated |
 | **Video** | Remotion (React) | Full control, professional animations |
 | **Format** | Kinetic typography | No stock footage, scales well |
@@ -141,5 +142,6 @@ apps/cli/src/commands/
 ## Related Documents
 
 - ADR: [0001-video-kinetic-typography](../../../docs/architecture/decisions/0001-video-kinetic-typography.md)
+- ADR: [0002-bun-runtime](../../../docs/architecture/decisions/0002-bun-runtime.md)
 - Feature: [video-shorts](../../../docs/features/video-shorts.md)
 - Context: [elevenlabs-setup](../context/elevenlabs-setup.md) (after setup)

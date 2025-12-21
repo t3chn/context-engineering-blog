@@ -1,16 +1,17 @@
 # AI Memory Index
 
 > **CRITICAL**: Read this file at every session start.
-> Last updated: 2025-12-20
+> Last updated: 2025-12-21
 
 ## Quick Reference
 
 | Key | Value |
 |-----|-------|
+| **Runtime** | Bun (1.1.45+) |
 | Primary language | RU |
 | Secondary language | EN (translation) |
 | Voice provider | ElevenLabs (voice clone) |
-| Video composition | Remotion |
+| Video composition | Remotion (`bunx remotionb`) |
 | Telegram channel | @ctxtdev |
 | Blog URL | https://ctxt.dev |
 

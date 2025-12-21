@@ -65,10 +65,13 @@ context-engineering-blog/
 
 ## Tech Stack
 
+- **Runtime**: Bun 1.1.45+ (native TypeScript)
 - **Blog**: Astro 4 + Tailwind CSS + MDX
-- **CLI**: TypeScript + Node.js + Commander + Inquirer
+- **CLI**: TypeScript + Commander + Inquirer
 - **AI**: Claude / OpenAI / Gemini (configurable)
 - **Telegram**: grammy
+- **Video**: Remotion (`bunx remotionb`)
+- **Voice**: ElevenLabs (voice clone)
 - **Monorepo**: pnpm workspaces
 
 ## Content Philosophy: Context-First Thinking
