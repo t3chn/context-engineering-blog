@@ -17,6 +17,21 @@ export default [
         ecmaVersion: "latest",
         sourceType: "module",
       },
+      globals: {
+        // Node.js globals
+        console: "readonly",
+        process: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        Buffer: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+        module: "readonly",
+        require: "readonly",
+        exports: "readonly",
+      },
     },
     plugins: {
       "@typescript-eslint": tseslint,

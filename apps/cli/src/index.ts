@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { input, editor, confirm, select } from "@inquirer/prompts";
+import { input, editor, confirm } from "@inquirer/prompts";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import type { PostInput, AIProvider } from "@ceb/shared";
@@ -12,13 +12,11 @@ import { generateBlogArticles } from "./generators/blog.js";
 import { publishToTelegram } from "./publishers/telegram.js";
 import { autoCommitAndPush } from "./git.js";
 import { videoCommand } from "./commands/video.js";
+import { publishCommand } from "./commands/publish.js";
 
 const program = new Command();
 
-program
-  .name("ceb")
-  .description("Context Engineering Blog CLI")
-  .version("0.1.0");
+program.name("ceb").description("Context Engineering Blog CLI").version("0.1.0");
 
 program
   .option("-p, --provider <provider>", "AI provider (claude, openai, gemini)")
@@ -159,5 +157,6 @@ ${blogArticles.en.content}`;
 
 // Add subcommands
 program.addCommand(videoCommand);
+program.addCommand(publishCommand);
 
 program.parse();
