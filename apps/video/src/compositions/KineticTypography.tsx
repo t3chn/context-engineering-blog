@@ -1,3 +1,4 @@
+import React from "react";
 import {
   AbsoluteFill,
   useCurrentFrame,
@@ -6,7 +7,6 @@ import {
   spring,
   Audio,
   staticFile,
-  Easing,
 } from "remotion";
 import { loadFont } from "@remotion/google-fonts/BebasNeue";
 import { z } from "zod";
@@ -36,6 +36,8 @@ export const kineticTypographySchema = z.object({
   keyPhrases: z.array(z.string()),
   theme: videoThemeSchema,
   audioSrc: z.string().optional(),
+  bgMusicSrc: z.string().optional(),
+  bgMusicVolume: z.number().optional(), // 0-1, default 0.15
 });
 
 export type KineticTypographyProps = z.infer<typeof kineticTypographySchema>;
@@ -63,12 +65,13 @@ const SingleWord: React.FC<{
   // Exit animation - quick fade out (handle short words)
   const minDuration = Math.max(1, durationFrames);
   const exitStart = Math.max(0, minDuration - 5);
-  const exitProgress = exitStart >= minDuration ? 1 : interpolate(
-    wordFrame,
-    [exitStart, minDuration],
-    [1, 0],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
-  );
+  const exitProgress =
+    exitStart >= minDuration
+      ? 1
+      : interpolate(wordFrame, [exitStart, minDuration], [1, 0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        });
 
   // Scale animation
   const scale = interpolate(entryProgress, [0, 1], [0.3, 1]) * exitProgress;
@@ -94,9 +97,8 @@ const SingleWord: React.FC<{
 
   // Calculate font size based on word length
   const baseFontSize = 140;
-  const fontSize = word.length > 10 ? baseFontSize * 0.7 :
-                   word.length > 7 ? baseFontSize * 0.85 :
-                   baseFontSize;
+  const fontSize =
+    word.length > 10 ? baseFontSize * 0.7 : word.length > 7 ? baseFontSize * 0.85 : baseFontSize;
 
   return (
     <div
@@ -118,11 +120,18 @@ const SingleWord: React.FC<{
           color,
           textTransform: "uppercase",
           letterSpacing: "0.05em",
-          textShadow: glowIntensity > 0
-            ? `0 0 30px ${glowColor}${Math.round(glowIntensity * 255).toString(16).padStart(2, '0')},
-               0 0 60px ${glowColor}${Math.round(glowIntensity * 0.5 * 255).toString(16).padStart(2, '0')},
-               0 0 100px ${glowColor}${Math.round(glowIntensity * 0.3 * 255).toString(16).padStart(2, '0')}`
-            : "none",
+          textShadow:
+            glowIntensity > 0
+              ? `0 0 30px ${glowColor}${Math.round(glowIntensity * 255)
+                  .toString(16)
+                  .padStart(2, "0")},
+               0 0 60px ${glowColor}${Math.round(glowIntensity * 0.5 * 255)
+                 .toString(16)
+                 .padStart(2, "0")},
+               0 0 100px ${glowColor}${Math.round(glowIntensity * 0.3 * 255)
+                 .toString(16)
+                 .padStart(2, "0")}`
+              : "none",
           textAlign: "center",
           maxWidth: "90%",
           lineHeight: 1.1,
@@ -136,9 +145,6 @@ const SingleWord: React.FC<{
 
 // Minimal animated background
 const MinimalBackground: React.FC<{ frame: number }> = ({ frame }) => {
-  // Subtle gradient rotation
-  const gradientAngle = (frame * 0.3) % 360;
-
   // Subtle pulse
   const pulse = Math.sin(frame * 0.05) * 0.02 + 1;
 
@@ -211,7 +217,8 @@ const OpeningFlash: React.FC<{ frame: number }> = ({ frame }) => {
       style={{
         position: "absolute",
         inset: 0,
-        background: "radial-gradient(circle at center, rgba(255, 255, 255, 0.9) 0%, transparent 50%)",
+        background:
+          "radial-gradient(circle at center, rgba(255, 255, 255, 0.9) 0%, transparent 50%)",
         opacity: flashOpacity,
         pointerEvents: "none",
       }}
@@ -250,8 +257,10 @@ const ProgressBar: React.FC<{ progress: number }> = ({ progress }) => {
 export const KineticTypography: React.FC<KineticTypographyProps> = ({
   words,
   keyPhrases,
-  theme,
+  _theme,
   audioSrc,
+  bgMusicSrc,
+  bgMusicVolume = 0.12,
 }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
@@ -271,9 +280,7 @@ export const KineticTypography: React.FC<KineticTypographyProps> = ({
   const currentWord = currentWordIndex >= 0 ? words[currentWordIndex] : null;
 
   // Calculate frame within current word
-  const wordFrame = currentWord
-    ? Math.max(0, frame - Math.floor(currentWord.startTime * fps))
-    : 0;
+  const wordFrame = currentWord ? Math.max(0, frame - Math.floor(currentWord.startTime * fps)) : 0;
 
   // Duration of current word in frames
   const wordDurationFrames = currentWord
@@ -304,9 +311,15 @@ export const KineticTypography: React.FC<KineticTypographyProps> = ({
       {/* Opening flash */}
       <OpeningFlash frame={frame} />
 
-      {/* Audio track */}
-      {audioSrc && (
-        <Audio src={audioSrc.startsWith("http") ? audioSrc : staticFile(audioSrc)} />
+      {/* Voice audio track */}
+      {audioSrc && <Audio src={audioSrc.startsWith("http") ? audioSrc : staticFile(audioSrc)} />}
+
+      {/* Background music (lower volume) */}
+      {bgMusicSrc && (
+        <Audio
+          src={bgMusicSrc.startsWith("http") ? bgMusicSrc : staticFile(bgMusicSrc)}
+          volume={bgMusicVolume}
+        />
       )}
 
       {/* Current word display */}
