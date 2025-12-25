@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Run lint-staged (ESLint + Prettier on staged files)
+echo "🔧 Running lint-staged..."
+pnpm lint-staged || exit 1
+
 # Prevent committing secrets
 # Check for common secret patterns in staged files
 

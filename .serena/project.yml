@@ -1,0 +1,22 @@
+name: context-engineering-blog
+description: Automated blog and Telegram channel about context engineering
+
+# Language servers for semantic code navigation
+language_servers:
+  typescript:
+    command: typescript-language-server
+    args: ["--stdio"]
+    file_patterns: ["*.ts", "*.tsx", "*.js", "*.jsx"]
+
+# Directories to analyze
+include:
+  - apps/
+  - packages/
+
+# Directories to ignore
+exclude:
+  - node_modules/
+  - dist/
+  - .next/
+  - .astro/
+  - coverage/
