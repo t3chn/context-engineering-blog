@@ -17,6 +17,7 @@ export const publishCommand = new Command("publish")
   .option("--channel <id>", "Channel ID (default from .env)")
   .option("--dry-run", "Preview without publishing")
   .option("--no-review", "Skip proofreading step")
+  .option("-y, --yes", "Auto-confirm without prompting")
   .action(async (options) => {
     try {
       console.log("\n📢 Telegram Publisher\n");
@@ -42,6 +43,10 @@ export const publishCommand = new Command("publish")
           validate: (v) => (v.trim() ? true : "Text is required"),
         });
       }
+
+      // Normalize escaped newlines from CLI arguments
+      // Shell passes \n as literal backslash+n, not actual newline
+      text = text.replace(/\\n/g, "\n");
 
       // Validate text
       const validation = validateText(text);
@@ -116,10 +121,13 @@ export const publishCommand = new Command("publish")
       // Confirm before publishing
       const channelId = options.channel || config.telegram.channelId;
 
-      const shouldPublish = await confirm({
-        message: `Опубликовать в ${channelId}?`,
-        default: true,
-      });
+      let shouldPublish = options.yes;
+      if (!shouldPublish) {
+        shouldPublish = await confirm({
+          message: `Опубликовать в ${channelId}?`,
+          default: true,
+        });
+      }
 
       if (!shouldPublish) {
         console.log("❌ Публикация отменена");
