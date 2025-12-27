@@ -118,6 +118,28 @@ export async function publishToTelegram(
 }
 
 /**
+ * Delete a message from Telegram channel
+ */
+export async function deleteMessage(
+  botToken: string,
+  channelId: string,
+  messageId: number
+): Promise<{ success: boolean; error?: string }> {
+  if (!botToken || !channelId) {
+    return { success: false, error: "Telegram bot token and channel ID are required" };
+  }
+
+  const bot = new Bot(botToken);
+
+  try {
+    await bot.api.deleteMessage(channelId, messageId);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+/**
  * Legacy function for backward compatibility
  */
 export async function publish(botToken: string, channelId: string, text: string): Promise<void> {
