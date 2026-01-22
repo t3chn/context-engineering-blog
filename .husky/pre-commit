@@ -4,6 +4,10 @@
 echo "🔧 Running lint-staged..."
 pnpm lint-staged || exit 1
 
+# Validate blog posts (date, frontmatter, lang)
+echo "📝 Validating blog posts..."
+./scripts/validate-posts.sh || exit 1
+
 # Prevent committing secrets
 # Check for common secret patterns in staged files
 

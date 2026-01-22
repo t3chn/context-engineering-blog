@@ -1,7 +1,7 @@
 ---
 title: "Loadout: менеджер зависимостей для AI-скиллов"
 description: "Как решить проблему дрейфа skills в AI-агентах. Manifest + lock + symlinks — паттерн из пакетных менеджеров для управления контекстом."
-date: 2025-01-22
+date: 2026-01-22
 tags: ["context-engineering", "agents", "skills", "tooling"]
 lang: ru
 ---

@@ -1,7 +1,7 @@
 ---
 title: "Loadout: Dependency Management for AI Skills"
 description: "How to solve skill drift in AI agents. Manifest + lock + symlinks — a pattern from package managers applied to context management."
-date: 2025-01-22
+date: 2026-01-22
 tags: ["context-engineering", "agents", "skills", "tooling"]
 lang: en
 ---
