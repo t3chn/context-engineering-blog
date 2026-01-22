@@ -23,12 +23,12 @@ description: |
 
 Every post answers 4 questions:
 
-| Stage | Question | Purpose |
-|-------|----------|---------|
-| **Problem** | What are we trying to solve? | Hook |
-| **Context** | Why is it hard/important? | Depth |
-| **Solution** | How to approach it? | Practice |
-| **Insight** | What new understanding? | Value |
+| Stage        | Question                     | Purpose  |
+| ------------ | ---------------------------- | -------- |
+| **Problem**  | What are we trying to solve? | Hook     |
+| **Context**  | Why is it hard/important?    | Depth    |
+| **Solution** | How to approach it?          | Practice |
+| **Insight**  | What new understanding?      | Value    |
 
 ## Quick Start
 
@@ -58,27 +58,33 @@ lang: ru
 ---
 
 ## Problem
+
 ...
 
 ## Context
+
 ...
 
 ## Solution
+
 ...
 
 ## Insight
+
 ...
 ```
 
 ## Checklists
 
 ### Pre-flight
+
 - [ ] Specific problem defined?
 - [ ] Context present (why it matters)?
 - [ ] Practical solution?
 - [ ] Insight included?
 
 ### Post-flight
+
 - [ ] Telegram: plain text + minimal emoji?
 - [ ] Hashtags at the end?
 - [ ] No author signature?
@@ -87,9 +93,66 @@ lang: ru
 ## Platforms
 
 Detailed rules:
+
 - Telegram: [references/TELEGRAM.md](references/TELEGRAM.md)
 - Blog RU: [references/BLOG_RU.md](references/BLOG_RU.md)
 - Blog EN: [references/BLOG_EN.md](references/BLOG_EN.md)
+
+## Publishing Workflow
+
+After content creation, follow this workflow:
+
+### 1. Save Files
+
+```
+apps/blog/src/content/posts/ru/<slug>.md  # Russian article
+apps/blog/src/content/posts/en/<slug>.md  # English article
+```
+
+### 2. Commit & Push (triggers auto-deploy)
+
+```bash
+git add apps/blog/src/content/posts/
+git commit -m "post(ru,en): <short description>"
+git push
+```
+
+Blog deploys automatically to https://ctxt.dev via GitHub Actions.
+
+### 3. Publish to Telegram
+
+Use CLI to publish with proofreading:
+
+```bash
+# With review (recommended)
+pnpm cli publish -t "your telegram post text here"
+
+# Auto-confirm without prompts
+pnpm cli publish -t "text" -y
+
+# Skip proofreading (fast)
+pnpm cli publish -t "text" -y --no-review
+
+# Dry run (preview only)
+pnpm cli publish -t "text" --dry-run
+```
+
+**Important**: Pass the Telegram post text directly, NOT the blog article.
+
+### Complete Example
+
+```bash
+# After creating files with Write tool:
+git add apps/blog/src/content/posts/ && \
+git commit -m "post(ru,en): add loadout article" && \
+git push && \
+pnpm cli publish -t "Скиллы для AI-агентов дрейфуют.
+
+Копируешь skill в проект — он начинает жить своей жизнью.
+...
+
+#contextengineering #llm" -y
+```
 
 ## Prohibited
 
