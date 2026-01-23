@@ -85,13 +85,9 @@ for file in $STAGED_POSTS; do
     if [ -z "$POST_YEAR" ]; then
       log_error "$file: Invalid date format '$DATE' (expected YYYY-MM-DD)"
     else
-      # Check year is reasonable (current year or last year, not future beyond current year)
-      LAST_YEAR=$((CURRENT_YEAR - 1))
-
-      if [ "$POST_YEAR" -lt "$LAST_YEAR" ]; then
-        log_error "$file: Date year $POST_YEAR is too old (current year: $CURRENT_YEAR)"
-      elif [ "$POST_YEAR" -gt "$CURRENT_YEAR" ]; then
-        log_error "$file: Date year $POST_YEAR is in the future (current year: $CURRENT_YEAR)"
+      # Date must be current year only (publication date = now)
+      if [ "$POST_YEAR" -ne "$CURRENT_YEAR" ]; then
+        log_error "$file: Date year $POST_YEAR must be current year ($CURRENT_YEAR)"
       fi
 
       # Validate date format more strictly
