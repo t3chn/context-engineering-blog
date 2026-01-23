@@ -5,7 +5,6 @@
 set -e
 
 POSTS_DIR="apps/blog/src/content/posts"
-CURRENT_YEAR=$(date +%Y)
 ERRORS=0
 
 # Colors
@@ -79,20 +78,14 @@ for file in $STAGED_POSTS; do
 
   # Date validation
   if [ -n "$DATE" ]; then
-    # Extract year from date (format: YYYY-MM-DD)
-    POST_YEAR=$(echo "$DATE" | grep -oE '^[0-9]{4}' || true)
-
-    if [ -z "$POST_YEAR" ]; then
+    # Validate date format
+    if ! echo "$DATE" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'; then
       log_error "$file: Invalid date format '$DATE' (expected YYYY-MM-DD)"
     else
-      # Date must be current year only (publication date = now)
-      if [ "$POST_YEAR" -ne "$CURRENT_YEAR" ]; then
-        log_error "$file: Date year $POST_YEAR must be current year ($CURRENT_YEAR)"
-      fi
-
-      # Validate date format more strictly
-      if ! echo "$DATE" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'; then
-        log_error "$file: Invalid date format '$DATE' (expected YYYY-MM-DD)"
+      # Date must be today (publication date = now)
+      TODAY=$(date +%Y-%m-%d)
+      if [ "$DATE" != "$TODAY" ]; then
+        log_error "$file: Date '$DATE' must be today ($TODAY)"
       fi
     fi
   fi
