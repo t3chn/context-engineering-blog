@@ -13,6 +13,7 @@ import { publishToTelegram } from "./publishers/telegram.js";
 import { autoCommitAndPush } from "./git.js";
 import { videoCommand } from "./commands/video.js";
 import { publishCommand } from "./commands/publish.js";
+import { editCommand } from "./commands/edit.js";
 
 const program = new Command();
 
@@ -158,5 +159,6 @@ ${blogArticles.en.content}`;
 // Add subcommands
 program.addCommand(videoCommand);
 program.addCommand(publishCommand);
+program.addCommand(editCommand);
 
 program.parse();

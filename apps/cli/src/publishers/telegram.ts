@@ -140,6 +140,42 @@ export async function deleteMessage(
 }
 
 /**
+ * Edit a message in Telegram channel
+ */
+export async function editMessage(
+  botToken: string,
+  channelId: string,
+  messageId: number,
+  text: string,
+  options: PublishOptions = {}
+): Promise<PublishResult> {
+  if (!botToken || !channelId) {
+    return { success: false, error: "Telegram bot token and channel ID are required" };
+  }
+
+  const validation = validateText(text);
+  if (!validation.valid) {
+    return { success: false, error: validation.error };
+  }
+
+  const { parseMode = null, disablePreview = false } = options;
+  const processedText = parseMode === "HTML" ? escapeHtml(text) : text;
+
+  const bot = new Bot(botToken);
+
+  try {
+    await bot.api.editMessageText(channelId, messageId, processedText, {
+      parse_mode: parseMode ?? undefined,
+      disable_web_page_preview: disablePreview,
+    });
+
+    return { success: true, messageId };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+/**
  * Legacy function for backward compatibility
  */
 export async function publish(botToken: string, channelId: string, text: string): Promise<void> {
