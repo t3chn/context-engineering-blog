@@ -1,7 +1,7 @@
 ---
 title: "Evoidea: меметический алгоритм для идей"
 description: "Как применить эволюционный подход к генерации стартап-идей с помощью AI-агентов"
-date: 2025-01-23
+date: 2026-01-23
 tags: ["context-engineering", "ai-agents", "ideation"]
 lang: ru
 ---

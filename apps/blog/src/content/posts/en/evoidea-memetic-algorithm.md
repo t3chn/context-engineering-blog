@@ -1,7 +1,7 @@
 ---
 title: "Evoidea: A Memetic Algorithm for Ideas"
 description: "Applying evolutionary algorithms to startup idea generation with AI agents"
-date: 2025-01-23
+date: 2026-01-23
 tags: ["context-engineering", "ai-agents", "ideation"]
 lang: en
 ---
