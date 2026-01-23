@@ -5,19 +5,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Electric blue accent
+        // Neon green accent (matching GitHub profile)
         accent: {
-          50: "#eef9ff",
-          100: "#d8f1ff",
-          200: "#b9e7ff",
-          300: "#89daff",
-          400: "#52c4ff",
-          500: "#2aa6ff",
-          600: "#0d85f8",
-          700: "#066de5",
-          800: "#0b58b9",
-          900: "#104b91",
-          950: "#0f2e58",
+          50: "#eafff0",
+          100: "#c9ffe0",
+          200: "#98ffc4",
+          300: "#5cff9f",
+          400: "#22ff6a",
+          500: "#00ff44",
+          600: "#00d93a",
+          700: "#00a82d",
+          800: "#008324",
+          900: "#006b1d",
+          950: "#003d11",
         },
         // Neutral palette
         surface: {
