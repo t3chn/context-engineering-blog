@@ -125,13 +125,14 @@ for file in $STAGED_POSTS; do
   # 1. Double spaces (outside code blocks)
   # Extract non-code content for text checks
   TEXT_CONTENT=$(echo "$CONTENT" | awk '
-    /^```/ { in_code = !in_code; next }
-    !in_code { print }
+    /^```/ { in_code = 1 - in_code; next }
+    in_code == 0 { print }
   ')
 
-  DOUBLE_SPACES=$(echo "$TEXT_CONTENT" | grep -n '  ' | grep -v '^[0-9]*:$' | head -3 || true)
+  # Check for double spaces but ignore lines that are likely list items or indentation
+  DOUBLE_SPACES=$(echo "$TEXT_CONTENT" | grep -E '[a-zA-Zа-яА-Я]  [a-zA-Zа-яА-Я]' | head -3 || true)
   if [ -n "$DOUBLE_SPACES" ]; then
-    log_warn "$file: Double spaces found (check manually)"
+    log_warn "$file: Double spaces found between words (check manually)"
   fi
 
   # 2. Trailing whitespace
