@@ -118,10 +118,94 @@ for file in $STAGED_POSTS; do
     log_error "$file: Content too short ($CONTENT_LENGTH chars, minimum 100)"
   fi
 
-  # Check for common issues
-  if echo "$CONTENT" | grep -qE '^\s*-\s+' | head -1 && echo "$file" | grep -q '/ru/'; then
-    log_warn "$file: Contains bullet lists (avoid in Telegram-style posts)"
+  # ============================================
+  # EDITORIAL CHECKS (like publishing house QA)
+  # ============================================
+
+  # 1. Double spaces (outside code blocks)
+  # Extract non-code content for text checks
+  TEXT_CONTENT=$(echo "$CONTENT" | awk '
+    /^```/ { in_code = !in_code; next }
+    !in_code { print }
+  ')
+
+  DOUBLE_SPACES=$(echo "$TEXT_CONTENT" | grep -n '  ' | grep -v '^[0-9]*:$' | head -3 || true)
+  if [ -n "$DOUBLE_SPACES" ]; then
+    log_warn "$file: Double spaces found (check manually)"
   fi
+
+  # 2. Trailing whitespace
+  TRAILING_WS=$(grep -n '[[:space:]]$' "$file" | head -3 || true)
+  if [ -n "$TRAILING_WS" ]; then
+    log_warn "$file: Trailing whitespace on some lines"
+  fi
+
+  # 3. Multiple consecutive empty lines (more than 2)
+  if grep -qE '^$' "$file" && awk '/^$/{c++;if(c>2)exit 1}!/^$/{c=0}' "$file"; then
+    : # OK
+  else
+    log_warn "$file: Multiple consecutive empty lines (>2)"
+  fi
+
+  # 4. Space before punctuation in Russian (common typo)
+  if echo "$file" | grep -q '/ru/'; then
+    SPACE_BEFORE_PUNCT=$(echo "$TEXT_CONTENT" | grep -En ' [.,!?:;]' | head -3 || true)
+    if [ -n "$SPACE_BEFORE_PUNCT" ]; then
+      log_warn "$file: Space before punctuation (typo?)"
+    fi
+  fi
+
+  # ============================================
+  # STYLE GUIDE CHECKS
+  # ============================================
+
+  # 5. Motivational/promotional phrases (forbidden)
+  MOTIVATIONAL_RU='[Вв]ы сможете|[Лл]учший способ|[Сс]амый лучший|[Пп]росто сделай|[Оо]бязательно попробуй'
+  MOTIVATIONAL_EN='[Yy]ou can do it|[Tt]he best way|[Jj]ust do|[Mm]ust try|[Aa]mazing|[Ii]ncredible'
+
+  if echo "$TEXT_CONTENT" | grep -qE "$MOTIVATIONAL_RU"; then
+    log_warn "$file: Contains motivational phrases (avoid per style guide)"
+  fi
+  if echo "$TEXT_CONTENT" | grep -qE "$MOTIVATIONAL_EN"; then
+    log_warn "$file: Contains promotional phrases (avoid per style guide)"
+  fi
+
+  # 6. CTA phrases (forbidden)
+  CTA_PATTERNS='[Пп]одпиши|[Сс]убскрайб|[Ss]ubscribe|[Ff]ollow me|[Чч]итай далее|[Rr]ead more|[Кк]ликни|[Cc]lick here'
+  if echo "$TEXT_CONTENT" | grep -qE "$CTA_PATTERNS"; then
+    log_warn "$file: Contains CTA phrases (forbidden per style guide)"
+  fi
+
+  # 7. Excessive emoji (more than 3)
+  # Use perl for proper unicode emoji detection
+  EMOJI_COUNT=$(perl -CSD -ne 'print while /[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F600}-\x{1F64F}]/g' "$file" 2>/dev/null | wc -c | tr -d ' ' || echo "0")
+  if [ "$EMOJI_COUNT" -gt 3 ]; then
+    log_warn "$file: Too many emoji ($EMOJI_COUNT found, max 3 recommended)"
+  fi
+
+  # 8. Author signature at end (forbidden)
+  LAST_LINES=$(echo "$CONTENT" | tail -5)
+  if echo "$LAST_LINES" | grep -qiE '(—|--|^by |автор:|author:).*[A-Za-zА-Яа-я]'; then
+    log_warn "$file: Possible author signature at end (forbidden)"
+  fi
+
+  # 9. Check for common typos
+  COMMON_TYPOS='teh |hte |taht |контекст инженеринг|prompt инженеринг'
+  TYPOS_FOUND=$(echo "$TEXT_CONTENT" | grep -iE "$COMMON_TYPOS" | head -2 || true)
+  if [ -n "$TYPOS_FOUND" ]; then
+    log_warn "$file: Possible typos found"
+  fi
+
+  # 10. Code block validation - check for lines starting with single space (not indentation)
+  # Detects: " loadout" (bad) but not "  indented" (ok) or "loadout" (ok)
+  CODE_ISSUES=$(echo "$CONTENT" | awk '
+    /^```/ { in_code = !in_code; next }
+    in_code && /^ [^ \t]/ { print NR": "$0 }
+  ' | head -3 || true)
+  if [ -n "$CODE_ISSUES" ]; then
+    log_warn "$file: Code block lines may have unwanted leading space"
+  fi
+
 done
 
 echo ""

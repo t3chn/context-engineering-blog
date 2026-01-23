@@ -145,3 +145,6 @@ Loadout не изобретает новое. Он применяет прове
 ## Источники
 
 - [Loadout на GitHub](https://github.com/t3chn/loadout)
+  test
+  test
+  test
