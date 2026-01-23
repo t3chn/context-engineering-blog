@@ -54,7 +54,7 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
         <ul class="space-y-6">
           {sortedPosts.map((post, index) => (
             <li class="animate-slide-up opacity-0" style={`animation-delay: ${0.1 + index * 0.1}s`}>
-              <a href={`/en/posts/${post.id}`} class="group block">
+              <a href={`/posts/${post.id}`} class="group block">
                 <article class="glass rounded-lg p-6 transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:shadow-lg hover:shadow-accent-500/5">
                   <div class="flex items-start justify-between gap-4">
                     <div class="flex-1">
