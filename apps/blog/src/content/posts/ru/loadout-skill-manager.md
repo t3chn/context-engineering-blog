@@ -6,6 +6,8 @@ tags: ["context-engineering", "agents", "skills", "tooling"]
 lang: ru
 ---
 
+**Disclaimer**: Loadout — это мой эксперимент, а не готовое production-решение. Проект находится в ранней стадии разработки.
+
 ## Проблема
 
 Скиллы для AI-агентов дрейфуют.

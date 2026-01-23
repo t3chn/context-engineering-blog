@@ -6,6 +6,8 @@ tags: ["context-engineering", "agents", "skills", "tooling"]
 lang: en
 ---
 
+**Disclaimer**: Loadout is my experiment, not a production-ready solution. The project is in early development.
+
 ## Problem
 
 Skills for AI agents drift.
