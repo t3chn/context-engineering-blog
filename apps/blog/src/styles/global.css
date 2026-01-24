@@ -105,6 +105,15 @@
   }
 }
 
+@layer components {
+  /* Fix: Remove default prose padding from code inside pre blocks */
+  /* Tailwind Typography adds padding-inline-start to pre code, which only affects */
+  /* the first line since .line elements are inline. This removes that padding. */
+  .prose pre code {
+    padding: 0 !important;
+  }
+}
+
 @layer utilities {
   /* Focus styles */
   .focus-ring {
