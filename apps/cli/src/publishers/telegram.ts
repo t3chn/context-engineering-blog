@@ -1,4 +1,6 @@
 import { Bot } from "grammy";
+import { existsSync } from "fs";
+import { join } from "path";
 
 const MAX_MESSAGE_LENGTH = 4096;
 const MAX_RETRIES = 3;
@@ -24,6 +26,52 @@ export function escapeHtml(text: string): string {
 }
 
 /**
+ * Validate ctxt.dev blog links in text
+ * - Must use /posts/ru/ or /posts/en/ format (not /ru/posts/)
+ * - Post slug must exist on disk
+ */
+function validateBlogLinks(text: string): { valid: boolean; error?: string } {
+  // Find all ctxt.dev URLs
+  const urlRegex = /https?:\/\/ctxt\.dev\/([^\s)>\]]+)/g;
+  const matches = text.matchAll(urlRegex);
+
+  for (const match of matches) {
+    const path = match[1];
+
+    // Check for wrong URL format (/ru/posts/ instead of /posts/ru/)
+    if (path.match(/^(ru|en)\/posts\//)) {
+      const correctedPath = path.replace(/^(ru|en)\/posts\//, "posts/$1/");
+      return {
+        valid: false,
+        error: `Invalid blog URL format: https://ctxt.dev/${path}\n   Correct format: https://ctxt.dev/${correctedPath}`,
+      };
+    }
+
+    // If it's a blog post URL, validate the post exists
+    const postMatch = path.match(/^posts\/(ru|en)\/([^/]+)\/?$/);
+    if (postMatch) {
+      const [, lang, slug] = postMatch;
+      // Try to find the posts directory (works from repo root or apps/cli)
+      const possiblePaths = [
+        join(process.cwd(), "apps/blog/src/content/posts", lang, `${slug}.md`),
+        join(process.cwd(), "../blog/src/content/posts", lang, `${slug}.md`),
+        join(process.cwd(), "../../apps/blog/src/content/posts", lang, `${slug}.md`),
+      ];
+
+      const postExists = possiblePaths.some((p) => existsSync(p));
+      if (!postExists) {
+        return {
+          valid: false,
+          error: `Blog post not found: https://ctxt.dev/${path}\n   Expected file: posts/${lang}/${slug}.md`,
+        };
+      }
+    }
+  }
+
+  return { valid: true };
+}
+
+/**
  * Validate text before publishing
  */
 export function validateText(text: string): { valid: boolean; error?: string } {
@@ -36,6 +84,12 @@ export function validateText(text: string): { valid: boolean; error?: string } {
       valid: false,
       error: `Text too long: ${text.length} chars (max ${MAX_MESSAGE_LENGTH})`,
     };
+  }
+
+  // Validate blog links
+  const linkValidation = validateBlogLinks(text);
+  if (!linkValidation.valid) {
+    return linkValidation;
   }
 
   return { valid: true };
