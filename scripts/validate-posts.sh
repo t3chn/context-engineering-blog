@@ -196,6 +196,23 @@ for file in $STAGED_POSTS; do
     log_warn "$file: Code block lines may have unwanted leading space"
   fi
 
+  # 11. Check for missing language pair (ru/en)
+  # Every post should have both ru and en versions
+  FILENAME=$(basename "$file")
+  DIR_LANG=$(echo "$file" | grep -oE '/posts/(ru|en)/' | sed 's|/posts/||;s|/||')
+
+  if [ "$DIR_LANG" = "ru" ]; then
+    PAIR_FILE="${POSTS_DIR}/en/${FILENAME}"
+  elif [ "$DIR_LANG" = "en" ]; then
+    PAIR_FILE="${POSTS_DIR}/ru/${FILENAME}"
+  else
+    PAIR_FILE=""
+  fi
+
+  if [ -n "$PAIR_FILE" ] && [ ! -f "$PAIR_FILE" ]; then
+    log_error "$file: Missing language pair - $PAIR_FILE does not exist"
+  fi
+
 done
 
 echo ""
