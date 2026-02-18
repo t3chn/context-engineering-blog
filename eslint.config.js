@@ -26,6 +26,9 @@ export default [
         setInterval: "readonly",
         clearInterval: "readonly",
         Buffer: "readonly",
+        // Web API globals (used in Astro API routes)
+        Response: "readonly",
+        Request: "readonly",
         __dirname: "readonly",
         __filename: "readonly",
         module: "readonly",

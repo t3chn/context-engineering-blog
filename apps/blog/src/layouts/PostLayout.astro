@@ -24,9 +24,37 @@ const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentInde
 const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 
 const basePath = lang === "en" ? "/en" : "";
+
+const dateIso = date.toISOString();
+const postUrl = `https://ctxt.dev/posts/${post.id}/`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description: description,
+  datePublished: dateIso,
+  dateModified: dateIso,
+  author: {
+    "@type": "Organization",
+    name: "ctxt.dev",
+    url: "https://ctxt.dev",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "ctxt.dev",
+    url: "https://ctxt.dev",
+  },
+  inLanguage: lang,
+  url: postUrl,
+  keywords: tags,
+};
 ---
 
 <BaseLayout title={title} description={description} lang={lang}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
   <div class="lg:grid lg:grid-cols-[1fr_280px] lg:gap-12">
     <!-- Main Content -->
     <article class="min-w-0">
@@ -35,9 +63,10 @@ const basePath = lang === "en" ? "/en" : "";
         <div class="mb-4 flex items-center gap-3">
           <a
             href={basePath || "/"}
-            class="inline-flex items-center gap-1 font-mono text-sm text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-accent)]"
+            class="inline-flex items-center gap-1 font-mono text-sm text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-accent)] focus-ring rounded"
           >
             <svg
+              aria-hidden="true"
               class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
@@ -84,13 +113,13 @@ const basePath = lang === "en" ? "/en" : "";
       </div>
 
       <!-- Navigation -->
-      <nav class="mt-16 border-t border-[var(--color-border)] pt-8">
+      <nav aria-label="Post navigation" class="mt-16 border-t border-[var(--color-border)] pt-8">
         <div class="grid gap-4 sm:grid-cols-2">
           {
             prevPost && (
               <a
                 href={`${basePath}/posts/${prevPost.id}`}
-                class="group flex flex-col rounded-lg border border-[var(--color-border)] p-4 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)]"
+                class="group flex flex-col rounded-lg border border-[var(--color-border)] p-4 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)] focus-ring"
               >
                 <span class="mb-1 font-mono text-xs text-[var(--color-text-secondary)]">
                   {lang === "ru" ? "Предыдущий" : "Previous"}
@@ -105,7 +134,7 @@ const basePath = lang === "en" ? "/en" : "";
             nextPost && (
               <a
                 href={`${basePath}/posts/${nextPost.id}`}
-                class="group flex flex-col rounded-lg border border-[var(--color-border)] p-4 text-right transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)] sm:col-start-2"
+                class="group flex flex-col rounded-lg border border-[var(--color-border)] p-4 text-right transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)] sm:col-start-2 focus-ring"
               >
                 <span class="mb-1 font-mono text-xs text-[var(--color-text-secondary)]">
                   {lang === "ru" ? "Следующий" : "Next"}
@@ -132,7 +161,7 @@ const basePath = lang === "en" ? "/en" : "";
           >
             {lang === "ru" ? "Содержание" : "On this page"}
           </h3>
-          <nav id="toc" class="space-y-2 text-sm">
+          <nav id="toc" aria-label="Table of contents" class="space-y-2 text-sm">
             <p class="text-[var(--color-text-secondary)] italic" id="toc-loading">
               {lang === "ru" ? "Загрузка..." : "Loading..."}
             </p>
@@ -155,6 +184,7 @@ const basePath = lang === "en" ? "/en" : "";
             class="group inline-flex w-full items-center justify-center gap-2.5 rounded-md border border-[var(--color-border)] bg-transparent px-4 py-2.5 font-mono text-sm text-[var(--color-text)] transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-accent-500/5"
           >
             <svg
+              aria-hidden="true"
               class="h-4 w-4 text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-accent)]"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -165,6 +195,7 @@ const basePath = lang === "en" ? "/en" : "";
             </svg>
             <span>@ctxtdev</span>
             <svg
+              aria-hidden="true"
               class="h-3 w-3 text-[var(--color-text-secondary)] transition-all group-hover:text-[var(--color-accent)] group-hover:translate-x-0.5"
               fill="none"
               viewBox="0 0 24 24"
