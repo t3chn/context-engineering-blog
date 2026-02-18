@@ -149,6 +149,108 @@
   }
 }
 
+/* NLWeb chat widget dark mode overrides */
+.dark .nlweb-dropdown-search-input {
+  background-color: theme('colors.surface.900');
+  border-color: theme('colors.surface.700');
+  color: theme('colors.surface.50');
+}
+
+.dark .nlweb-dropdown-search-input::placeholder {
+  color: theme('colors.surface.400');
+}
+
+.dark .nlweb-dropdown-history-icon {
+  color: theme('colors.surface.400');
+}
+
+.dark .nlweb-dropdown-history-icon:hover {
+  color: theme('colors.surface.200');
+}
+
+.dark .nlweb-dropdown-results {
+  background: theme('colors.surface.900');
+  border-color: theme('colors.surface.700');
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.dark .nlweb-dropdown-chat-input-container {
+  background-color: theme('colors.surface.900');
+  border-color: theme('colors.surface.700');
+}
+
+.dark .nlweb-dropdown-chat-input-box {
+  background-color: theme('colors.surface.800');
+  border-color: theme('colors.surface.700');
+}
+
+.dark .nlweb-dropdown-chat-input {
+  color: theme('colors.surface.50');
+}
+
+.dark .nlweb-dropdown-send-button {
+  color: theme('colors.surface.400');
+}
+
+.dark .nlweb-dropdown-send-button:hover {
+  background-color: theme('colors.surface.700');
+  color: theme('colors.surface.200');
+}
+
+.dark .nlweb-dropdown-close {
+  color: theme('colors.surface.400');
+}
+
+.dark .nlweb-dropdown-close:hover {
+  color: theme('colors.surface.200');
+}
+
+.dark .item-container {
+  background-color: theme('colors.surface.800');
+  border-color: theme('colors.surface.700');
+}
+
+.dark .item-title {
+  color: theme('colors.surface.50');
+}
+
+.dark .item-description {
+  color: theme('colors.surface.400');
+}
+
+.dark .item-metadata {
+  color: theme('colors.surface.500');
+}
+
+.dark .message {
+  border-color: theme('colors.surface.800');
+}
+
+.dark .nlweb-dropdown-conversations-panel {
+  background-color: theme('colors.surface.900');
+}
+
+.dark .nlweb-dropdown-conversations-header {
+  background-color: theme('colors.surface.900');
+  border-color: theme('colors.surface.700');
+}
+
+.dark .nlweb-dropdown-conversations-header h3 {
+  color: theme('colors.surface.50');
+}
+
+.dark .nlweb-dropdown-conversation-title {
+  color: theme('colors.surface.200');
+}
+
+.dark .nlweb-dropdown-conversation-item:hover {
+  background-color: theme('colors.surface.800');
+}
+
+.dark .loading-dot {
+  background-color: theme('colors.surface.400');
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
