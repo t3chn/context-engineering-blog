@@ -68,12 +68,37 @@ AutoRAG + NLWeb template for ctxt.dev:
 3. Assign `ask.ctxt.dev` as custom domain on the Worker
 4. Embed `snippet.html` in Astro layout for on-site chat widget
 
+## Deployed Configuration (2026-02-18)
+
+- **Worker URL**: `ctxt-dev-nlweb-nlweb.inskricion.workers.dev`
+- **AI Search instance**: `quiet-resonance-e4ef`, 18 pages indexed
+- **Workers plan**: Free (10K neurons/day hard cap, Error 3036 on exceed)
+- **AI Gateway rate limit**: 50 req/min, sliding window (returns 429 before Workers AI)
+- **Widget**: FAB in BaseLayout.astro, lazy-loads NLWeb JS on first click
+- **R2**: Enabled (card on file for R2, not Workers AI)
+
+### Billing Risk Assessment
+
+| Scenario                     | Risk                                           |
+| ---------------------------- | ---------------------------------------------- |
+| Workers Free + card attached | Zero — hard cap at 10K neurons/day, no charges |
+| 100K bot requests            | First ~200-300 consume quota, rest return 3036 |
+| Cost per /ask query          | ~$0.0002 (within free tier)                    |
+| AI Gateway 50 req/min        | Blocks abuse before it reaches Workers AI      |
+
+### Protection Layers
+
+1. Workers Free hard cap (10K neurons/day)
+2. AI Gateway sliding window (50 req/min → 429)
+3. Workers AI built-in rate limit (300 req/min for text generation)
+
 ## Caveats
 
 - **Public preview** — no SLA, pricing may change post-beta
-- **Separate subdomain** — Worker lives at `ask.ctxt.dev`, not inside Pages
+- **Separate subdomain** — Worker lives at `*.workers.dev`, not inside Pages
 - **Multilingual** — default embedding model may handle RU poorly; needs testing
 - **Hallucinations** — grounding reduces risk but doesn't eliminate it
+- **No native spending cap** — if ever upgrading to Workers Paid, must add WAF/rate limiting
 
 ## Sources
 
