@@ -11,7 +11,7 @@
     --color-text: theme('colors.surface.900');
     --color-text-secondary: theme('colors.surface.600');
     --color-border: theme('colors.surface.200');
-    --color-accent: theme('colors.accent.500');
+    --color-accent: theme('colors.accent.600');
     --color-accent-hover: theme('colors.accent.600');
   }
 

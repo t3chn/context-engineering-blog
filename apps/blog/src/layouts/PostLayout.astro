@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, date, tags, lang } = post.data;
+const { title, description, date, updatedAt, author, tags, lang } = post.data;
 
 const formattedDate = new Intl.DateTimeFormat(lang === "ru" ? "ru-RU" : "en-US", {
   year: "numeric",
@@ -26,7 +26,13 @@ const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 const basePath = lang === "en" ? "/en" : "";
 
 const dateIso = date.toISOString();
+const modifiedIso = updatedAt ? updatedAt.toISOString() : dateIso;
 const postUrl = `https://ctxt.dev/posts/${post.id}/`;
+
+// Compute alternate language URL for hreflang
+const postSlug = post.id.replace(/^(ru|en)\//, "");
+const altLang = lang === "ru" ? "en" : "ru";
+const altUrl = `https://ctxt.dev/posts/${altLang}/${postSlug}/`;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -34,10 +40,10 @@ const jsonLd = {
   headline: title,
   description: description,
   datePublished: dateIso,
-  dateModified: dateIso,
+  dateModified: modifiedIso,
   author: {
     "@type": "Organization",
-    name: "ctxt.dev",
+    name: author,
     url: "https://ctxt.dev",
   },
   publisher: {
@@ -54,6 +60,8 @@ const jsonLd = {
 <BaseLayout title={title} description={description} lang={lang}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <link rel="alternate" hreflang={lang} href={postUrl} />
+    <link rel="alternate" hreflang={altLang} href={altUrl} />
   </Fragment>
   <div class="lg:grid lg:grid-cols-[1fr_280px] lg:gap-12">
     <!-- Main Content -->
