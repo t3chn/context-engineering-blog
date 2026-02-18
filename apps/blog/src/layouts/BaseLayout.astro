@@ -226,7 +226,7 @@ const currentPath = Astro.url.pathname;
       </div>
     </footer>
 
-    <!-- NLWeb Chat Widget -->
+    <!-- NLWeb Chat FAB -->
     <link
       rel="stylesheet"
       href="https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev/nlweb-dropdown-chat.css"
@@ -235,18 +235,78 @@ const currentPath = Astro.url.pathname;
       rel="stylesheet"
       href="https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev/common-chat-styles.css"
     />
-    <div id="nlweb-chat"></div>
+    <div id="nlweb-fab-wrapper" class="nlweb-fab-wrapper">
+      <button
+        id="nlweb-fab-toggle"
+        class="nlweb-fab-button"
+        aria-label={lang === "ru" ? "Открыть поиск по блогу" : "Open blog search"}
+      >
+        <svg
+          id="nlweb-fab-icon-search"
+          aria-hidden="true"
+          class="nlweb-fab-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <svg
+          id="nlweb-fab-icon-close"
+          aria-hidden="true"
+          class="nlweb-fab-icon"
+          style="display:none"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+      <div id="nlweb-fab-panel" class="nlweb-fab-panel" style="display:none">
+        <div id="nlweb-chat"></div>
+      </div>
+    </div>
     <script is:inline define:vars={{ lang }}>
-      import("https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev/nlweb-dropdown-chat.js").then(
-        ({ NLWebDropdownChat }) => {
-          new NLWebDropdownChat({
-            containerId: "nlweb-chat",
-            site: "https://ctxt.dev",
-            placeholder: lang === "ru" ? "Спросить о контенте..." : "Ask about content...",
-            endpoint: "https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev",
-          });
-        }
-      );
+      (function () {
+        var loaded = false;
+        var toggle = document.getElementById("nlweb-fab-toggle");
+        var panel = document.getElementById("nlweb-fab-panel");
+        var iconSearch = document.getElementById("nlweb-fab-icon-search");
+        var iconClose = document.getElementById("nlweb-fab-icon-close");
+
+        toggle.addEventListener("click", function () {
+          var isOpen = panel.style.display !== "none";
+          if (isOpen) {
+            panel.style.display = "none";
+            iconSearch.style.display = "";
+            iconClose.style.display = "none";
+          } else {
+            panel.style.display = "flex";
+            iconSearch.style.display = "none";
+            iconClose.style.display = "";
+            if (!loaded) {
+              loaded = true;
+              import("https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev/nlweb-dropdown-chat.js").then(
+                function (mod) {
+                  new mod.NLWebDropdownChat({
+                    containerId: "nlweb-chat",
+                    site: "https://ctxt.dev",
+                    placeholder: lang === "ru" ? "Спросить о контенте..." : "Ask about content...",
+                    endpoint: "https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev",
+                  });
+                }
+              );
+            }
+            var input = panel.querySelector("input");
+            if (input) input.focus();
+          }
+        });
+      })();
     </script>
 
     <!-- Theme toggle script -->

@@ -149,6 +149,107 @@
   }
 }
 
+/* NLWeb FAB layout */
+.nlweb-fab-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.nlweb-fab-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid theme('colors.surface.200');
+  background: theme('colors.white');
+  color: theme('colors.surface.600');
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.nlweb-fab-button:hover {
+  border-color: theme('colors.accent.500');
+  color: theme('colors.accent.600');
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dark .nlweb-fab-button {
+  background: theme('colors.surface.800');
+  border-color: theme('colors.surface.700');
+  color: theme('colors.surface.400');
+}
+
+.dark .nlweb-fab-button:hover {
+  border-color: theme('colors.accent.400');
+  color: theme('colors.accent.400');
+}
+
+.nlweb-fab-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.nlweb-fab-panel {
+  width: 380px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border: 1px solid theme('colors.surface.200');
+  background: theme('colors.white');
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.dark .nlweb-fab-panel {
+  background: theme('colors.surface.900');
+  border-color: theme('colors.surface.700');
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 480px) {
+  .nlweb-fab-wrapper {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .nlweb-fab-panel {
+    width: calc(100vw - 32px);
+    max-height: 60vh;
+  }
+}
+
+/* Override NLWeb dropdown positioning inside FAB panel */
+.nlweb-fab-panel .nlweb-dropdown-search-input {
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid theme('colors.surface.200');
+}
+
+.dark .nlweb-fab-panel .nlweb-dropdown-search-input {
+  border-bottom-color: theme('colors.surface.700');
+}
+
+.nlweb-fab-panel .nlweb-dropdown-results {
+  position: static;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  max-height: 400px;
+  height: auto;
+  min-height: 0;
+  display: flex;
+}
+
 /* NLWeb chat widget dark mode overrides */
 .dark .nlweb-dropdown-search-input {
   background-color: theme('colors.surface.900');
