@@ -1,0 +1,11 @@
+/*
+  Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+/rss.xml
+  Content-Type: application/rss+xml; charset=utf-8
+
+/en/rss.xml
+  Content-Type: application/rss+xml; charset=utf-8
