@@ -226,6 +226,29 @@ const currentPath = Astro.url.pathname;
       </div>
     </footer>
 
+    <!-- NLWeb Chat Widget -->
+    <link
+      rel="stylesheet"
+      href="https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev/nlweb-dropdown-chat.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev/common-chat-styles.css"
+    />
+    <div id="nlweb-chat"></div>
+    <script is:inline define:vars={{ lang }}>
+      import("https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev/nlweb-dropdown-chat.js").then(
+        ({ NLWebDropdownChat }) => {
+          new NLWebDropdownChat({
+            containerId: "nlweb-chat",
+            site: "https://ctxt.dev",
+            placeholder: lang === "ru" ? "Спросить о контенте..." : "Ask about content...",
+            endpoint: "https://ctxt-dev-nlweb-nlweb.inskricion.workers.dev",
+          });
+        }
+      );
+    </script>
+
     <!-- Theme toggle script -->
     <script>
       const toggle = document.getElementById("theme-toggle");
