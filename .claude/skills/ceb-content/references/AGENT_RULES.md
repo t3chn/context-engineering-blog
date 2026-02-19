@@ -4,9 +4,9 @@
 
 1. Read TLDR.md first
 2. Load sections by task from INDEX.json:
-   - `telegram_post` → core + telegram
-   - `blog_ru` → core + blog_ru
-   - `blog_en` → core + blog_en
+   - `telegram_post` → voice + prohibited + core + telegram
+   - `blog_ru` → voice + prohibited + core + blog_ru
+   - `blog_en` → voice + prohibited + core + blog_en
 3. Load assets only if templates are needed
 
 ## Token Budget
@@ -53,10 +53,10 @@ New platforms are added as:
 
 ## Common Mistakes
 
-| Mistake | Fix |
-|---------|-----|
-| Too many emoji | Max 1-2 per post |
+| Mistake            | Fix                     |
+| ------------------ | ----------------------- |
+| Too many emoji     | Max 1-2 per post        |
 | Bullet lists in TG | Replace with paragraphs |
-| Motivational tone | Remove, keep facts |
-| Author signature | Delete |
-| No hashtags | Add at the end |
+| Motivational tone  | Remove, keep facts      |
+| Author signature   | Delete                  |
+| No hashtags        | Add at the end          |

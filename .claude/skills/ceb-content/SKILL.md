@@ -14,9 +14,9 @@ description: |
 
 1. Read [references/TLDR.md](references/TLDR.md) — style essence
 2. Load [references/INDEX.json](references/INDEX.json) and select sections by task:
-   - `telegram_post` → core + telegram
-   - `blog_ru` → core + blog_ru + template
-   - `blog_en` → core + blog_en
+   - `telegram_post` → voice + prohibited + core + telegram
+   - `blog_ru` → voice + prohibited + core + blog_ru
+   - `blog_en` → voice + prohibited + core + blog_en
 3. Load examples from assets/ only if needed
 
 ## Philosophy: Context-First Thinking

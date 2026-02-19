@@ -1,10 +1,17 @@
 {
   "name": "Context Engineering Blog Style",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "philosophy": "Context-First Thinking",
   "tldr": "Format: Problem → Context → Solution → Insight. Telegram: plain text + minimal emoji. No signature.",
 
   "sections": [
+    { "id": "voice", "title": "Author Voice", "path": "VOICE.md", "type": "voice" },
+    {
+      "id": "prohibited",
+      "title": "Prohibited Patterns",
+      "path": "PROHIBITED.md",
+      "type": "rules"
+    },
     { "id": "core", "title": "Style Guide", "path": "STYLE_GUIDE.md", "type": "philosophy" },
     { "id": "rules", "title": "Agent Rules", "path": "AGENT_RULES.md", "type": "rules" },
     { "id": "telegram", "title": "Telegram", "path": "TELEGRAM.md", "type": "platform" },
@@ -14,15 +21,15 @@
 
   "tasks": {
     "telegram_post": {
-      "load": ["core", "telegram"],
+      "load": ["voice", "prohibited", "core", "telegram"],
       "description": "Generate Telegram post in Russian"
     },
     "blog_ru": {
-      "load": ["core", "blog_ru"],
+      "load": ["voice", "prohibited", "core", "blog_ru"],
       "description": "Generate blog article in Russian"
     },
     "blog_en": {
-      "load": ["core", "blog_en"],
+      "load": ["voice", "prohibited", "core", "blog_en"],
       "description": "Translate blog article to English"
     }
   },

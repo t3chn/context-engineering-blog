@@ -27,38 +27,11 @@ It's an engineering discipline: how to structure information for LLMs.
    - What new thing did you learn?
    - How does it change the approach?
 
-## Voice Tone
-
-**Yes:**
-- Technical but accessible
-- Confident but not preachy
-- Practical: specifics > abstractions
-- Honest: voice doubts openly
-
-**No:**
-- Motivational ("You can do it too!")
-- Promotional ("The best way!")
-- Condescending ("Just do...")
-- Uncertain without reason
-
 ## Language
 
 - **Primary**: Russian
 - **Technical terms**: in English (context engineering, prompt, LLM)
 - **Hashtags**: #contextengineering #llm #ai (always in English)
-
-## Honest Uncertainty
-
-If unsure — say it directly:
-
-```
-✓ "This works in 80% of cases, but there are nuances..."
-✓ "Haven't fully understood yet, but hypothesis is..."
-✓ "Need more data, but looks like..."
-
-✗ "Always do it this way!"
-✗ "This is the only correct approach"
-```
 
 ## Good Post Examples
 
