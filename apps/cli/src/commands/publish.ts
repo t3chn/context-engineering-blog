@@ -4,9 +4,9 @@
  */
 
 import { Command } from "commander";
-import { input, confirm, select } from "@inquirer/prompts";
+import { input, confirm } from "@inquirer/prompts";
 import { readFileSync } from "fs";
-import { loadConfig, getApiKey } from "../config.js";
+import { loadConfig } from "../config.js";
 import { publishToTelegram, validateText } from "../publishers/telegram.js";
 import { proofread, formatProofreadResult } from "../reviewers/proofread.js";
 
@@ -60,52 +60,31 @@ export const publishCommand = new Command("publish")
       console.log(text);
       console.log("─".repeat(50));
 
-      // Proofreading step
+      // Proofreading step (local checks, no API)
       let finalText = text;
 
       if (options.review !== false) {
-        console.log("\n🔍 Proofreading with extended thinking...\n");
+        console.log("\n🔍 Проверка по стайл-гайду...\n");
 
-        try {
-          const apiKey = getApiKey("claude");
-          const result = await proofread(apiKey, text, "telegram");
+        const result = await proofread("", text, "telegram");
+        console.log(formatProofreadResult(result));
 
-          console.log(formatProofreadResult(result));
-
-          if (!result.isApproved && result.issues.length > 0) {
-            console.log("\n📝 Исправленный текст:");
-            console.log("─".repeat(50));
-            console.log(result.correctedText);
-            console.log("─".repeat(50));
-
-            const useCorrection = await select({
-              message: "Какой текст использовать?",
-              choices: [
-                { name: "Исправленный", value: "corrected" },
-                { name: "Оригинальный", value: "original" },
-                { name: "Отмена", value: "cancel" },
-              ],
+        if (!result.isApproved) {
+          if (!options.yes) {
+            const continueAnyway = await confirm({
+              message: "Продолжить с ошибками?",
+              default: false,
             });
-
-            if (useCorrection === "cancel") {
+            if (!continueAnyway) {
               console.log("❌ Публикация отменена");
               process.exit(0);
             }
-
-            finalText = useCorrection === "corrected" ? result.correctedText : text;
           } else {
-            console.log("\n✓ Текст прошёл проверку");
-          }
-        } catch (error) {
-          console.error("⚠️ Proofreading failed:", (error as Error).message);
-          const continueAnyway = await confirm({
-            message: "Продолжить без проверки?",
-            default: false,
-          });
-          if (!continueAnyway) {
-            process.exit(1);
+            console.log("\n⚠️ Есть ошибки, но -y флаг — продолжаю");
           }
         }
+
+        finalText = text;
       }
 
       // Dry run mode
