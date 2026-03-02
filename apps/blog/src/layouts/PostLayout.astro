@@ -23,7 +23,7 @@ const currentIndex = sortedPosts.findIndex((p) => p.id === post.id);
 const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 
-const basePath = lang === "en" ? "/en" : "";
+const basePath = lang === "ru" ? "/ru" : "";
 
 const dateIso = date.toISOString();
 const modifiedIso = updatedAt ? updatedAt.toISOString() : dateIso;

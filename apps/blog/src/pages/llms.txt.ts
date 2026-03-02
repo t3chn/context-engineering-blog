@@ -23,20 +23,21 @@ export async function GET(_context: APIContext) {
     "",
   ];
 
-  if (ruPosts.length > 0) {
-    lines.push("## Posts (RU)");
-    lines.push(...ruPosts.map(formatPost));
-    lines.push("");
-  }
-
   if (enPosts.length > 0) {
     lines.push("## Posts (EN)");
     lines.push(...enPosts.map(formatPost));
     lines.push("");
   }
 
+  if (ruPosts.length > 0) {
+    lines.push("## Posts (RU)");
+    lines.push(...ruPosts.map(formatPost));
+    lines.push("");
+  }
+
   lines.push("## Links");
-  lines.push("- RSS: https://ctxt.dev/rss.xml");
+  lines.push("- RSS (EN): https://ctxt.dev/rss.xml");
+  lines.push("- RSS (RU): https://ctxt.dev/ru/rss.xml");
   lines.push("- Telegram: https://t.me/ctxtdev");
   lines.push("");
 

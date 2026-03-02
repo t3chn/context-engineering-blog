@@ -7,7 +7,7 @@ interface Props {
   lang?: "ru" | "en";
 }
 
-const { title, description = "Context Engineering Blog", lang = "ru" } = Astro.props;
+const { title, description = "Context Engineering Blog", lang = "en" } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
@@ -43,8 +43,8 @@ const currentPath = Astro.url.pathname;
     <meta name="twitter:description" content={description} />
 
     <!-- RSS Autodiscovery -->
-    <link rel="alternate" type="application/rss+xml" title="ctxt.dev (RU)" href="/rss.xml" />
-    <link rel="alternate" type="application/rss+xml" title="ctxt.dev (EN)" href="/en/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="ctxt.dev (EN)" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="ctxt.dev (RU)" href="/ru/rss.xml" />
 
     <!-- WebSite structured data -->
     <script
@@ -97,7 +97,7 @@ const currentPath = Astro.url.pathname;
       >
         <!-- Logo -->
         <a
-          href={lang === "en" ? "/en" : "/"}
+          href={lang === "ru" ? "/ru" : "/"}
           class="group flex items-center gap-2 focus-ring rounded-md"
         >
           <span
@@ -115,24 +115,24 @@ const currentPath = Astro.url.pathname;
               href="/"
               class:list={[
                 "px-2 py-1 rounded transition-colors focus-ring",
-                lang === "ru"
-                  ? "text-[var(--color-accent)] bg-accent-500/10"
-                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]",
-              ]}
-            >
-              RU
-            </a>
-            <span class="text-surface-300 dark:text-surface-600">/</span>
-            <a
-              href="/en"
-              class:list={[
-                "px-2 py-1 rounded transition-colors focus-ring",
                 lang === "en"
                   ? "text-[var(--color-accent)] bg-accent-500/10"
                   : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]",
               ]}
             >
               EN
+            </a>
+            <span class="text-surface-300 dark:text-surface-600">/</span>
+            <a
+              href="/ru"
+              class:list={[
+                "px-2 py-1 rounded transition-colors focus-ring",
+                lang === "ru"
+                  ? "text-[var(--color-accent)] bg-accent-500/10"
+                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]",
+              ]}
+            >
+              RU
             </a>
           </div>
 

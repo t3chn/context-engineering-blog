@@ -3,13 +3,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("posts", ({ data }) => {
-  return data.lang === "ru" && !data.draft;
+  return data.lang === "en" && !data.draft;
 });
 
 const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<BaseLayout title="Context Engineering Blog" lang="ru">
+<BaseLayout title="Context Engineering Blog" lang="en">
   <!-- Hero Section -->
   <section aria-label="About" class="mb-16 animate-fade-in">
     <div class="relative">
@@ -27,8 +27,8 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
           Context<span class="text-[var(--color-accent)]">.</span>Engineering
         </h1>
         <p class="mt-4 max-w-xl text-lg leading-relaxed text-[var(--color-text-secondary)]">
-          Блог о context engineering, структуризации информации для LLM и AI-разработке. Практика,
-          не теория.
+          A blog about context engineering, structuring information for LLMs and AI development.
+          Practice, not theory.
         </p>
       </div>
     </div>
@@ -41,7 +41,7 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
         id="posts-heading"
         class="font-mono text-sm font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]"
       >
-        Последние посты
+        Latest Posts
       </h2>
       <div class="h-px flex-1 bg-[var(--color-border)]"></div>
     </div>
@@ -49,9 +49,7 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
     {
       sortedPosts.length === 0 ? (
         <div class="rounded-lg border border-dashed border-[var(--color-border)] p-12 text-center">
-          <p class="font-mono text-[var(--color-text-secondary)]">
-            Пока нет постов. Скоро появятся!
-          </p>
+          <p class="font-mono text-[var(--color-text-secondary)]">No posts yet. Coming soon!</p>
         </div>
       ) : (
         <ul class="space-y-6">
@@ -65,7 +63,7 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
                         datetime={post.data.date.toISOString()}
                         class="font-mono text-xs text-[var(--color-text-secondary)]"
                       >
-                        {new Intl.DateTimeFormat("ru-RU", {
+                        {new Intl.DateTimeFormat("en-US", {
                           year: "numeric",
                           month: "short",
                           day: "numeric",
@@ -116,7 +114,7 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
     class="mt-16 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8 text-center"
   >
     <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-secondary)]">
-      Следи за обновлениями
+      Follow for updates
     </p>
     <a
       href="https://t.me/ctxtdev"

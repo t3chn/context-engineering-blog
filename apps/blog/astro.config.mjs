@@ -7,8 +7,8 @@ export default defineConfig({
   site: "https://ctxt.dev",
   integrations: [mdx(), tailwind(), sitemap()],
   i18n: {
-    defaultLocale: "ru",
-    locales: ["ru", "en"],
+    defaultLocale: "en",
+    locales: ["en", "ru"],
     routing: {
       prefixDefaultLocale: false,
     },
