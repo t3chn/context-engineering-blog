@@ -44,7 +44,7 @@ Currently 11 plugins across four categories: development pipeline, productivity,
 
 These four plugins cover the full loop from "I have a task" to "it's reviewed, tested, and shipped."
 
-**[sigil](https://github.com/heurema/signum)** — Evidence-driven development pipeline. Takes a task description and runs it through four phases: CONTRACT (scope lock) -> EXECUTE (implementation with repair loop) -> AUDIT (parallel multi-model review) -> PACK (artifact generation). The audit phase is the interesting part: Claude Opus, Codex, and Gemini review the diff independently. Critical findings from any model block the merge. Important findings require 2+ models to agree. Every AI finding is validated against the actual diff — if the model cites a line that doesn't exist, the finding is discarded as hallucination.
+**[signum](https://github.com/heurema/signum)** — Evidence-driven development pipeline. Takes a task description and runs it through four phases: CONTRACT (scope lock) -> EXECUTE (implementation with repair loop) -> AUDIT (parallel multi-model review) -> PACK (artifact generation). The audit phase is the interesting part: Claude Opus, Codex, and Gemini review the diff independently. Critical findings from any model block the merge. Important findings require 2+ models to agree. Every AI finding is validated against the actual diff — if the model cites a line that doesn't exist, the finding is discarded as hallucination.
 
 ```bash
 /signum"Add rate limiting to the API endpoint"
