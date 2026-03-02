@@ -31,7 +31,7 @@ The gap is familiar from every ecosystem: npm existed before create-react-app. P
 claude plugin marketplace add heurema/emporium
 
 # Install any plugin
-claude plugin install sigil@emporium
+claude plugin install signum@emporium
 claude plugin install herald@emporium
 claude plugin install arbiter@emporium
 ```
@@ -44,10 +44,10 @@ Currently 11 plugins across four categories: development pipeline, productivity,
 
 These four plugins cover the full loop from "I have a task" to "it's reviewed, tested, and shipped."
 
-**[sigil](https://github.com/heurema/sigil)** — Evidence-driven development pipeline. Takes a task description and runs it through four phases: CONTRACT (scope lock) -> EXECUTE (implementation with repair loop) -> AUDIT (parallel multi-model review) -> PACK (artifact generation). The audit phase is the interesting part: Claude Opus, Codex, and Gemini review the diff independently. Critical findings from any model block the merge. Important findings require 2+ models to agree. Every AI finding is validated against the actual diff — if the model cites a line that doesn't exist, the finding is discarded as hallucination.
+**[sigil](https://github.com/heurema/signum)** — Evidence-driven development pipeline. Takes a task description and runs it through four phases: CONTRACT (scope lock) -> EXECUTE (implementation with repair loop) -> AUDIT (parallel multi-model review) -> PACK (artifact generation). The audit phase is the interesting part: Claude Opus, Codex, and Gemini review the diff independently. Critical findings from any model block the merge. Important findings require 2+ models to agree. Every AI finding is validated against the actual diff — if the model cites a line that doesn't exist, the finding is discarded as hallucination.
 
 ```bash
-/sigil "Add rate limiting to the API endpoint"
+/signum"Add rate limiting to the API endpoint"
 ```
 
 **[arbiter](https://github.com/heurema/arbiter)** — Multi-AI orchestrator. Routes tasks to Codex CLI and Gemini CLI from inside Claude Code. The `panel` mode runs both in parallel and formats a side-by-side comparison. The `quorum` mode runs a formal two-round vote (APPROVE/BLOCK/NEEDS_INFO) with a deterministic policy and adversarial tiebreaker. The `diverge` mode is the most unusual: three independent implementations in isolated git worktrees with different strategy hints (minimal, refactor, redesign), presented as an anonymized decision matrix.
@@ -133,13 +133,13 @@ Every plugin in the ecosystem passes the same gates:
 - **pytest** — test coverage
 - **forge verify** — pre-publish quality gate (structure, manifest, conventions)
 - **anvil check** — 6-layer validation with JSON report
-- **sigil audit** — adversarial multi-model review for non-trivial changes
+- **signum audit** — adversarial multi-model review for non-trivial changes
 
-The forge -> anvil -> sigil pipeline means a plugin is validated at three levels before it reaches the marketplace: lifecycle compliance, structural correctness, and code quality under adversarial review.
+The forge -> anvil -> signum pipeline means a plugin is validated at three levels before it reaches the marketplace: lifecycle compliance, structural correctness, and code quality under adversarial review.
 
 ## Insight
 
-Plugin ecosystems compound. herald delivers news that informs trading decisions made with oracle and sentinel signals. reporter files bugs found during sigil reviews. forge scaffolds new plugins that anvil validates. Each tool makes the others more useful.
+Plugin ecosystems compound. herald delivers news that informs trading decisions made with oracle and sentinel signals. reporter files bugs found during signum reviews. forge scaffolds new plugins that anvil validates. Each tool makes the others more useful.
 
 The real moat isn't any single plugin. It's the lifecycle: `forge-new` -> develop -> `anvil:check` -> `forge-verify` -> `forge-register` -> discoverable in emporium. Any individual tool can be replicated. The pipeline connecting them is harder to copy because it encodes decisions about quality, trust, and distribution.
 
@@ -150,7 +150,7 @@ Eleven plugins, one marketplace, zero API keys required for the core tools. That
 ## Sources
 
 - [emporium — Plugin Marketplace](https://github.com/heurema/emporium)
-- [sigil — Development Pipeline](https://github.com/heurema/sigil)
+- [signum — Development Pipeline](https://github.com/heurema/signum)
 - [arbiter — Multi-AI Orchestrator](https://github.com/heurema/arbiter)
 - [anvil — Plugin Dev Toolkit](https://github.com/heurema/anvil)
 - [forge — Plugin Lifecycle Manager](https://github.com/heurema/forge)
