@@ -6,19 +6,17 @@ tags: ["context-engineering", "claude-code", "agents", "verification", "contract
 lang: en
 ---
 
-The standard response to unreliable AI output is more review. Run the diff through Claude, then Codex, then Gemini. Three models, three perspectives, hope they catch the same thing.
+You can review an AI diff with three models and still have zero ground truth. They'll tell you what looks "reasonable", not what's correct.
 
-There's a structural problem with this: more review doesn't fix the absence of ground truth. The models are comparing the code against their internal assumptions about what the code _should_ do. When those assumptions are wrong, or incomplete, or different from yours, the review is meaningless — not wrong, but unfalsifiable. You can't tell.
+The failure mode isn't "bad code". It's unfalsifiable intent: the requirement never became something you can run. You approved an implementation that satisfies your assumptions. The edge cases you didn't think to specify weren't caught, because there was nothing to catch them against. Two months later a bug report shows up.
 
 This is a context engineering problem.
 
 ## The Missing Context Layer
 
-Every verification process has two components: the artifact being verified and the standard it's measured against. Code review as practiced today is strong on the first and weak on the second. The "standard" is a mental model in the reviewer's head, reconstructed from the task description, comments, naming conventions, and surrounding code. It's implicit, incomplete, and unshared.
+Every verification process needs two things: the artifact being verified and the standard it's measured against. Code review as practiced today is strong on the first and weak on the second. The "standard" lives in the reviewer's head — reconstructed from the task description, comments, and surrounding code. Implicit, incomplete, unshared.
 
-This is why code review, human or AI, often reduces to: "does this look like code a competent programmer would write?" That's a style question. The correctness question — "does this satisfy the actual requirements?" — requires a written specification. Without one, you're doing archaeology: reconstructing intent from evidence after the fact.
-
-Context engineering, as a discipline, is about making implicit context explicit and structured so that the system can act on it reliably. For most tasks, this means retrieval, formatting, and injection into the prompt. For verification, it means something different: you need the context to exist _before_ implementation starts, not after. The contract is the context.
+Context engineering is about making implicit context explicit. For verification, this means the standard must exist _before_ implementation starts, not after. The contract is the context. Without one, all review is interpretation.
 
 ## Signum: Contract as Ground Truth
 
@@ -28,103 +26,125 @@ Context engineering, as a discipline, is about making implicit context explicit 
 CONTRACT → EXECUTE → AUDIT → PACK
 ```
 
-The sequence matters more than the phases themselves.
-
-**CONTRACT** comes first. An AI Contractor (Claude Sonnet) takes your task description and turns it into a structured specification: goal, acceptance criteria with verify commands, in-scope/out-of-scope file lists, assumptions, risk level. The spec is graded A–F across six dimensions: testability, negative coverage, clarity, scope boundedness, completeness, boundary cases. Grade D or lower is a hard stop — the pipeline doesn't start until the spec is good enough to be verified against.
-
-The spec then goes to Codex and Gemini for independent validation. Do they see gaps? Contradictions? Criteria that can't be verified? This happens _before implementation begins_, which is when corrections are cheap.
-
-**EXECUTE** is the implementation phase. The Engineer agent — the only agent in the pipeline that writes code — receives `contract-engineer.json`, not `contract.json`. The difference is intentional: the holdout scenarios have been physically removed. More on why this matters below.
-
-**AUDIT** runs after implementation. The Mechanic (a deterministic, zero-LLM component) checks lint, typecheck, and test results against the pre-implementation baseline. Then Claude, Codex, and Gemini review the diff independently in parallel. Holdout scenarios — the ones the Engineer never saw — run against the result.
-
-**PACK** assembles the artifact: `proofpack.json`, a JSON file containing the contract hash, approval timestamp, base commit, implementation diff, and all audit results. It's what CI can gate on.
-
-## Holdout Scenarios: Preventing the Teach-to-the-Test Failure
-
-The hardest problem in AI verification isn't finding bugs. It's preventing the verifier from being contaminated by the implementation.
-
-This is a well-known issue in ML: if you tune your model against the test set, the test scores become meaningless. You've removed the separation between training signal and evaluation. The model hasn't learned the task — it's learned the benchmark.
-
-The same failure mode exists in AI development pipelines. If the implementing agent can see every acceptance criterion, it optimizes for those criteria specifically. It will satisfy the tests you wrote. Whether it satisfies the _intent_ behind them — including edge cases you didn't think to write — is a different question.
-
-Signum handles this with data-level separation. The Contractor generates acceptance criteria, then splits them. Public criteria go into `contract-engineer.json`. Holdout scenarios are removed physically — not hidden behind an instruction, physically absent from the file the Engineer reads. The Engineer implements against the public spec. The holdouts run against the finished result.
-
-Holdout minimums scale with risk level: 0 for low-risk tasks, 2 for medium, 5 for high. The Contractor also generates an execution policy from the contract — which tools the Engineer may use, which bash patterns are denied, which paths are in scope, maximum files changed. Policy violations after execution are `AUTO_BLOCK`.
-
-The Engineer can't optimize for what it can't see. That's the guarantee.
-
-## Repo-Level Invariants: The Permanent Contract
-
-Task-level contracts cover what you're building now. But some correctness properties should never regress, regardless of what any individual task is doing.
-
-Signum supports a `repo-contract.json` file at the project root — a list of invariants that must always hold:
+**CONTRACT** comes first. You describe your task in plain language. The Contractor agent (Claude Sonnet) formalizes it into `contract.json`:
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "goal": "Add rate limiting to POST /api/tokens — max 5 requests per minute per IP",
+  "acceptanceCriteria": [
+    {
+      "id": "AC1",
+      "description": "Requests over the limit return 429 with Retry-After header",
+      "verify": "pytest tests/test_rate_limit.py -k test_429_response",
+      "holdout": false
+    },
+    {
+      "id": "AC2",
+      "description": "Rate limit counter resets after the window expires",
+      "verify": "pytest tests/test_rate_limit.py -k test_window_reset",
+      "holdout": true
+    }
+  ],
+  "inScope": ["src/api/tokens.py", "tests/test_rate_limit.py"],
+  "riskLevel": "medium"
+}
+```
+
+The spec is graded A–F across six dimensions (testability, negative coverage, clarity, scope, completeness, boundary cases). Grade D is a hard stop — the pipeline doesn't proceed until the spec is verifiable.
+
+**EXECUTE**: The Engineer agent receives `contract-engineer.json` — the contract with `holdout: true` criteria physically removed. It implements against the visible spec. It can't optimize for what it can't see.
+
+**AUDIT**: The Mechanic (deterministic, zero-LLM) runs lint, typecheck, and tests against pre-implementation baseline. Then Claude, Codex, and Gemini review the diff independently in parallel. The holdout criteria — `AC2` in the example above — run against the finished result. If the Engineer forgot to reset the counter on window expiry, this is where it gets caught, automatically, against a criterion it never saw.
+
+**PACK**: `proofpack.json` — contract SHA-256, approval timestamp, base commit, diff, audit results. CI gates on it.
+
+## What Signum Blocks
+
+Before implementation can start, Signum rejects:
+
+- Acceptance criteria without a `verify` command (can't be tested = not a criterion)
+- Vague scope ("modify the auth module" without file-level specificity)
+- Risky assumptions flagged by external validators (Codex + Gemini review the spec for gaps)
+- Specs grading below D — missing boundary cases, negative coverage, or clarity
+
+After implementation, AUTO_BLOCK on:
+
+- Policy violations (too many files changed, denied bash patterns in the diff)
+- Repo invariant regressions (if `pytest -q` was passing before, it must pass after)
+- Holdout failures
+
+## Repo-Level Invariants: The Permanent Contract
+
+Task-level contracts cover what you're building now. `repo-contract.json` covers what must always hold:
+
+```json
+{
   "invariants": [
     { "id": "I-1", "description": "All tests pass", "verify": "pytest -q", "severity": "critical" },
-    { "id": "I-2", "description": "No type errors", "verify": "mypy src/", "severity": "critical" },
-    {
-      "id": "I-3",
-      "description": "No lint errors",
-      "verify": "ruff check src/",
-      "severity": "high"
-    }
+    { "id": "I-2", "description": "No type errors", "verify": "mypy src/", "severity": "critical" }
   ],
   "owner": "human"
 }
 ```
 
-Before EXECUTE begins, Signum runs all invariants and records baseline results. After implementation, it runs them again. Any invariant that was passing before and is failing after is flagged as a regression and triggers `AUTO_BLOCK`, regardless of whether the task-level acceptance criteria passed.
+Signum captures baseline before EXECUTE, re-runs after. Any regression is AUTO_BLOCK, regardless of task-level results. The `"owner": "human"` field declares this file is a human artifact. The AI enforces it; you define it.
 
-The `"owner": "human"` field is not enforced by software — it's a declaration that this file is a human artifact and should be treated accordingly. The AI pipeline enforces the invariants; the human maintains what they are.
+## The Audit Chain
 
-## The Audit Chain: What "Tamper-Evident" Actually Means
+At user approval, Signum hashes `contract.json` (SHA-256) and records the timestamp. Before the Engineer runs, the base commit is captured. The resulting proofpack ties: approved contract → base commit → implementation diff → audit results. You can't retroactively swap the contract and claim the proofpack was built against it.
 
-`proofpack.json` is described as tamper-evident. That requires some unpacking.
+This matters as AI-generated code increasingly needs provenance. Not "an AI wrote this" — "an AI implemented this against _this_ contract, validated before implementation, with _these_ audit results."
 
-When the user approves the contract (after the Contractor presents it and the external validators sign off), Signum computes the SHA-256 hash of `contract.json` and writes it to `contract-hash.txt` along with the approval timestamp. Before the Engineer runs, the base git commit is recorded. After PACK, the proofpack contains:
+## Install
+
+```bash
+# Add the marketplace (once)
+claude plugin marketplace add heurema/emporium
+
+# Install Signum
+claude plugin install signum@emporium
+
+# Optional: external model CLIs for multi-model audit
+# https://github.com/openai/codex
+# https://github.com/google-gemini/gemini-cli
+```
+
+Then run:
 
 ```
-auditChain: {
-  contract_sha256: <hash of the approved contract>,
-  approved_at: <ISO 8601 timestamp>,
-  base_commit: <git SHA before implementation>
-}
+/signum "add rate limiting to the API endpoint"
 ```
 
-Anyone who can verify the proofpack can confirm: this contract was what was approved (hash matches), the implementation started from this commit, and these are the audit results that were produced. You can't retroactively change the contract after implementation and claim the proofpack was based on it — the hash won't match.
-
-This matters in a world where AI-generated code will increasingly need to carry provenance. Not just "an AI wrote this" but "an AI implemented this against this contract, the contract was validated by these models, and the implementation was reviewed against these criteria."
-
-## What You Can't Game
-
-The more useful framing of tamper-evidence is: what can the implementing AI _not_ do to get a better outcome?
-
-It can't see holdout scenarios, so it can't optimize for them.
-
-It can't modify the contract after approval without breaking the hash.
-
-It can't skip the mechanic's deterministic checks — lint, typecheck, test regressions don't involve LLMs and can't be argued with.
-
-It can't influence what the parallel auditors see — they receive the diff independently, with no shared context.
-
-What it _can_ do: implement. That's the intended scope. The rest of the pipeline is structured to keep the implementation honest without relying on the implementing agent's self-report.
+Signum grades your spec, shows the contract for approval, runs the Engineer with holdouts removed, audits from multiple angles, and produces `proofpack.json`.
 
 ## Status
 
-Signum v3 is what it says on the tin: an early-stage tool with real ideas behind it. We run it on Signum's own development. That's not a marketing claim — it's the most direct form of commitment we can make. If the pipeline were painful or produced false confidence, we'd know immediately. v3 is the first version where running it on real work produces results we'd act on.
+**Works today:** Four-phase pipeline, spec quality gate, holdout scenarios, repo-level invariants, audit chain, proofpack.
 
-The four-phase structure is stable. The artifact schema will change. The multi-model audit currently requires Codex CLI and Gemini CLI installed separately; not everyone has both. The holdout and policy mechanisms are young — we expect the Contractor's judgment on what constitutes a good holdout to improve with iteration.
+**Requires:** Claude Code v2.1+, `git`, `jq`, `python3`. Multi-model audit additionally requires [Codex CLI](https://github.com/openai/codex) and [Gemini CLI](https://github.com/google-gemini/gemini-cli) — Signum degrades gracefully if either is absent.
 
-The underlying bet: the problem isn't AI code quality. It's the absence of an explicit correctness standard. Given a contract, AI-generated code can be verified rigorously. Without one, all verification is interpretation.
+**In flux:** Artifact schemas (proofpack, contract) will change. Contractor judgment on holdout quality improves with use.
+
+We run Signum on Signum's own development. v3 is the first version we'd stake our own projects on.
+
+## Feedback
+
+Signum is early and actively developed. If it blocks you incorrectly, misses an edge case, or the contract grading feels off, file it directly from Claude Code — no context switching required.
+
+Install [Reporter](https://github.com/heurema/reporter):
+
+```bash
+claude plugin install reporter@emporium
+```
+
+Then: `/report bug` or `/report feature` or `/report question`
+
+Reporter auto-detects you're working on a heurema product, attaches environment context (OS, shell, Claude Code version), previews the issue before submitting, and falls back to clipboard if `gh` isn't available.
 
 ## Sources
 
-- [signum — GitHub](https://github.com/heurema/signum)
+- [signum on GitHub](https://github.com/heurema/signum)
 - [skill7.dev/development/signum](https://skill7.dev/development/signum)
-- [emporium — Plugin Marketplace](https://github.com/heurema/emporium)
-- [arbiter — Multi-AI Orchestrator](https://github.com/heurema/arbiter)
+- [emporium — plugin marketplace](https://github.com/heurema/emporium)
+- [reporter — issue filing from Claude Code](https://github.com/heurema/reporter)
 - [11 Plugins, One Marketplace: Building an AI Agent Toolkit from Scratch](/posts/en/heurema-ecosystem)
