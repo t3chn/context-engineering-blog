@@ -3,6 +3,7 @@ title: "AI Writes Code. Where Is the Proof?"
 description: "Proofpack chains contract, implementation, and audit into a single verifiable record. Why proof artifacts are the missing primitive of AI code generation."
 date: 2026-03-05
 tags: ["context-engineering", "claude-code", "verification", "proofpack", "supply-chain"]
+canonical_url: "https://ctxt.dev/posts/en/signum-proofpack-ai-proof/"
 lang: en
 ---
 
@@ -72,7 +73,7 @@ The problem runs deeper. Even when a model finds a bug, the result is a PR comme
 
 ## Four layers: how a proofpack is built
 
-[In the previous post](/posts/en/signum-contract-first-ai-dev) I covered the contract as the source of truth. Here - how four layers together produce a verifiable artifact.
+[In the previous post](https://ctxt.dev/posts/en/signum-contract-first-ai-dev/) I covered the contract as the source of truth. Here - how four layers together produce a verifiable artifact.
 
 **CONTRACT.** The spec is formalized before implementation begins. Graded across 6 dimensions (A-F). Codex and Gemini validate for gaps. Holdout scenarios are generated - hidden acceptance criteria the engineer won't see.
 
@@ -133,7 +134,7 @@ AI code generation gets by without this. A model writes code, another model leav
 ## Sources
 
 - [signum on GitHub](https://github.com/heurema/signum)
-- [The contract is the context](/posts/en/signum-contract-first-ai-dev) - previous post
+- [The contract is the context](https://ctxt.dev/posts/en/signum-contract-first-ai-dev/) - previous post
 - [SLSA specification](https://slsa.dev/spec/v1.0/)
 - [in-toto framework](https://in-toto.io)
 - [Sigstore](https://sigstore.dev)
