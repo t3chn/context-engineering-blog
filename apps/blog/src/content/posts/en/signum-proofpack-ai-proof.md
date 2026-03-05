@@ -1,10 +1,20 @@
 ---
-title: "AI Writes Code. Where Is the Proof?"
-description: "Proofpack chains contract, implementation, and audit into a single verifiable record. Why proof artifacts are the missing primitive of AI code generation."
+title: AI Writes Code. Where Is the Proof?
+description: Proofpack chains contract, implementation, and audit into a single verifiable
+  record. Why proof artifacts are the missing primitive of AI code generation.
 date: 2026-03-05
-tags: ["context-engineering", "claude-code", "verification", "proofpack", "supply-chain"]
-canonical_url: "https://ctxt.dev/posts/en/signum-proofpack-ai-proof/"
+tags:
+  - context-engineering
+  - claude-code
+  - verification
+  - proofpack
+  - supply-chain
+canonical_url: https://ctxt.dev/posts/en/signum-proofpack-ai-proof/
 lang: en
+devto_id: 3311285
+devto_url: https://dev.to/t3chn/ai-writes-code-where-is-the-proof-13l8
+hashnode_id: 69a94327e2b951a5d06d31e7
+hashnode_url: https://t3chn.hashnode.dev/ai-writes-code-where-is-the-proof
 ---
 
 AI generated a function in seconds. Three models reviewed it. All said "looks good." Question: where is the artifact that confirms this?
