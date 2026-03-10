@@ -112,10 +112,25 @@ claude plugin install delve@emporium
 /delve "ваш вопрос" --depth standard
 ```
 
+## Обратная связь
+
+Delve в активной разработке. Если верификатор выносит некорректный вердикт, пайплайн застревает на стадии или resume не подхватывает прерванный run — можно сообщить прямо из Claude Code.
+
+Установите [Reporter](https://github.com/heurema/reporter):
+
+```bash
+claude plugin install reporter@emporium
+```
+
+Затем: `/report bug` или `/report feature` или `/report question`
+
+Reporter автоматически определяет, что вы работаете с продуктом heurema, прикрепляет контекст среды и показывает предпросмотр перед отправкой.
+
 ## Ссылки
 
 - [delve на GitHub](https://github.com/heurema/delve)
 - [skill7.dev/plugins/delve](https://skill7.dev/plugins/delve)
 - [Архитектура: docs/how-it-works.md](https://github.com/heurema/delve/blob/main/docs/how-it-works.md)
+- [reporter — отчёты из Claude Code](https://github.com/heurema/reporter)
 
 #context-engineering #claude-code #deep-research #verification #agents

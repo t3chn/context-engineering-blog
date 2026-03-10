@@ -124,5 +124,23 @@ claude plugin marketplace add heurema/emporium
 claude plugin install delve@emporium
 ```
 
-- GitHub: [github.com/heurema/delve](https://github.com/heurema/delve)
-- Plugin page: [skill7.dev/plugins/delve](https://skill7.dev/plugins/delve)
+## Feedback
+
+Delve is early and actively developed. If the verifier returns incorrect verdicts, the pipeline stalls on a stage, or resume doesn't pick up an interrupted run — file it directly from Claude Code.
+
+Install [Reporter](https://github.com/heurema/reporter):
+
+```bash
+claude plugin install reporter@emporium
+```
+
+Then: `/report bug` or `/report feature` or `/report question`
+
+Reporter auto-detects you're working on a heurema product, attaches environment context, and previews the issue before submitting.
+
+## Sources
+
+- [delve on GitHub](https://github.com/heurema/delve)
+- [skill7.dev/plugins/delve](https://skill7.dev/plugins/delve)
+- [Architecture: docs/how-it-works.md](https://github.com/heurema/delve/blob/main/docs/how-it-works.md)
+- [reporter — issue filing from Claude Code](https://github.com/heurema/reporter)
