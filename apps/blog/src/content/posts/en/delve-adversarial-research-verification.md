@@ -1,10 +1,21 @@
 ---
-title: "Research Agents Lie. The Fix Is Adversarial Verification."
-description: "Most AI research tools optimize for coherent synthesis, not factual accuracy. Delve adds a claim-level adversarial verification stage that changes the trust model entirely."
+title: Research Agents Lie. The Fix Is Adversarial Verification.
+description: Most AI research tools optimize for coherent synthesis, not factual accuracy.
+  Delve adds a claim-level adversarial verification stage that changes the trust model
+  entirely.
 date: 2026-03-10
-tags: ["context-engineering", "claude-code", "agents", "deep-research", "verification"]
+tags:
+  - context-engineering
+  - claude-code
+  - agents
+  - deep-research
+  - verification
 lang: en
-canonical_url: "https://ctxt.dev/posts/en/delve-adversarial-research-verification"
+canonical_url: https://ctxt.dev/posts/en/delve-adversarial-research-verification
+hashnode_id: 69b0246f19f75f797b8d162a
+hashnode_url: https://t3chn.hashnode.dev/research-agents-lie-the-fix-is-adversarial-verification
+devto_id: 3335244
+devto_url: https://dev.to/t3chn/research-agents-lie-the-fix-is-adversarial-verification-13ne
 ---
 
 You asked an AI research assistant a detailed question and got a confident multi-page answer with citations. Some of those citations don't exist. Several facts contradict each other. The synthesis reads well — it's structured, well-argued, fluent. It's also built on claims no one verified.
