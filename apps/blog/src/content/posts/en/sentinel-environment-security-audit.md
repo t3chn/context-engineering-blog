@@ -1,9 +1,20 @@
 ---
 title: "Environment is context: security auditing for AI agent workstations"
-description: "We carefully design prompts and tools but rarely audit the environment where the agent actually runs. Sentinel makes that measurable."
+description: We carefully design prompts and tools but rarely audit the environment
+  where the agent actually runs. Sentinel makes that measurable.
 date: 2026-03-11
-tags: ["contextengineering", "claudecode", "security", "agents", "devtools"]
+tags:
+  - contextengineering
+  - claudecode
+  - security
+  - agents
+  - devtools
+canonical_url: https://ctxt.dev/posts/en/sentinel-environment-security-audit
 lang: en
+devto_id: 3338087
+devto_url: https://dev.to/t3chn/environment-is-context-security-auditing-for-ai-agent-workstations-1li8
+hashnode_id: 69b118f23ff0e6a00d3e5c3b
+hashnode_url: https://t3chn.hashnode.dev/environment-is-context-security-auditing-for-ai-agent-workstations
 ---
 
 We talk a lot about prompts, tools, and evals. But almost nobody audits the environment where the AI agent actually runs.
