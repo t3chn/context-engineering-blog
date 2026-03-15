@@ -1,10 +1,19 @@
 ---
 title: "One Pass Isn't Enough: How Signum Learned to Fix Its Own Code"
-description: "AI code verification as a loop, not a gate. Iterative audit, contract self-critique, and shared context across tasks in Signum v4.6."
+description: AI code verification as a loop, not a gate. Iterative audit, contract
+  self-critique, and shared context across tasks in Signum v4.6.
 date: 2026-03-15
-tags: ["context-engineering", "claude-code", "verification", "iterative-audit"]
+tags:
+  - context-engineering
+  - claude-code
+  - verification
+  - iterative-audit
 canonical_url: https://ctxt.dev/posts/en/signum-iterative-verification/
 lang: en
+devto_id: 3355690
+devto_url: https://dev.to/t3chn/one-pass-isnt-enough-how-signum-learned-to-fix-its-own-code-3ngh
+hashnode_id: 69b6f434aaaf4def0c37f052
+hashnode_url: https://t3chn.hashnode.dev/one-pass-isnt-enough-how-signum-learned-to-fix-its-own-code
 ---
 
 The first version of Signum ran in a single pass: CONTRACT → EXECUTE → AUDIT → PACK. If the audit found a problem — block. Human deals with it.
