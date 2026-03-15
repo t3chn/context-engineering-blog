@@ -2,7 +2,8 @@
 title: "One Pass Isn't Enough: How Signum Learned to Fix Its Own Code"
 description: "AI code verification as a loop, not a gate. Iterative audit, contract self-critique, and shared context across tasks in Signum v4.6."
 date: 2026-03-15
-tags: ["context-engineering", "claude-code", "verification", "iterative-audit", "agents"]
+tags: ["context-engineering", "claude-code", "verification", "iterative-audit"]
+canonical_url: https://ctxt.dev/posts/en/signum-iterative-verification/
 lang: en
 ---
 
@@ -12,7 +13,7 @@ An honest process, but a limited one. Imagine code review where the reviewer can
 
 ## The problem: one-shot verification
 
-In [previous posts](/posts/en/signum-contract-first-ai-dev) I covered the contract as ground truth and [proofpack as a verification artifact](/posts/en/signum-proofpack-ai-proof). The architecture worked: spec → blinded implementation → multi-model audit → proof artifact. But production use revealed a pattern.
+In [previous posts](https://ctxt.dev/posts/en/signum-contract-first-ai-dev) I covered the contract as ground truth and [proofpack as a verification artifact](https://ctxt.dev/posts/en/signum-proofpack-ai-proof). The architecture worked: spec → blinded implementation → multi-model audit → proof artifact. But production use revealed a pattern.
 
 Most audit findings in our early runs weren't architectural issues. They were a missed edge case in error handling. A forgotten `null` check. A test that doesn't cover one of the acceptance criteria. Things the engineer agent could fix in seconds — if it got the chance.
 
@@ -58,7 +59,7 @@ Key decisions:
 
 **Finding fingerprints.** Each finding gets a fingerprint based on file, line range, and issue type. Between iterations, Signum classifies every finding as resolved, persisting, or new. The synthesizer uses this to evaluate actual progress — not just "fewer findings" but "which specific issues were fixed and which appeared."
 
-**Hallucination filtering.** If a reviewer cites a line that doesn't exist in the diff or references a file outside scope, the finding is discarded. This is the same mechanism described in the [ecosystem post](/posts/en/heurema-ecosystem): every AI finding is validated against the actual diff before it enters the repair loop.
+**Hallucination filtering.** If a reviewer cites a line that doesn't exist in the diff or references a file outside scope, the finding is discarded. This is the same mechanism described in the [ecosystem post](https://ctxt.dev/posts/en/heurema-ecosystem): every AI finding is validated against the actual diff before it enters the repair loop.
 
 ## Loop 2: contract — self-critique
 
@@ -129,7 +130,7 @@ Verification isn't a gate at the end of the pipeline. It's a loop. The same prin
 ## Sources
 
 - [signum on GitHub](https://github.com/heurema/signum)
-- [The Contract Is the Context](/posts/en/signum-contract-first-ai-dev) — first post in series
-- [AI Writes Code. Where's the Proof?](/posts/en/signum-proofpack-ai-proof) — second post in series
+- [The Contract Is the Context](https://ctxt.dev/posts/en/signum-contract-first-ai-dev) — first post in series
+- [AI Writes Code. Where's the Proof?](https://ctxt.dev/posts/en/signum-proofpack-ai-proof) — second post in series
 - [skill7.dev/development/signum](https://skill7.dev/development/signum)
 - [emporium — plugin marketplace](https://github.com/heurema/emporium)
