@@ -6,27 +6,47 @@ tags: ["context-engineering", "claude-code", "verification", "iterative-audit", 
 lang: en
 ---
 
-The first version of Signum ran in a single pass: contract → implementation → audit → verdict. If the audit found a problem — block. Human deals with it.
+The first version of Signum ran in a single pass: CONTRACT → EXECUTE → AUDIT → PACK. If the audit found a problem — block. Human deals with it.
 
-An honest process, but a limited one. Imagine code review where the reviewer can only comment and the author can't fix anything. The finding goes back to the queue, context is lost, the cycle restarts from scratch. Signum v4.6 closes this gap: the pipeline now fixes problems itself, within a single run.
+An honest process, but a limited one. Imagine code review where the reviewer can only comment and the author can't fix anything. The finding goes back to the queue, context is lost, the cycle restarts from scratch. Signum v4.6 closes this gap: the pipeline now loops at three levels — code, contract, and project context — before producing the final proofpack.
 
 ## The problem: one-shot verification
 
 In [previous posts](/posts/en/signum-contract-first-ai-dev) I covered the contract as ground truth and [proofpack as a verification artifact](/posts/en/signum-proofpack-ai-proof). The architecture worked: spec → blinded implementation → multi-model audit → proof artifact. But production use revealed a pattern.
 
-80% of audit findings aren't architectural issues. They're a missed edge case in error handling. A forgotten `null` check. A test that doesn't cover one of the acceptance criteria. Things the engineer agent could fix in seconds — if it got the chance.
+Most audit findings in our early runs weren't architectural issues. They were a missed edge case in error handling. A forgotten `null` check. A test that doesn't cover one of the acceptance criteria. Things the engineer agent could fix in seconds — if it got the chance.
 
 Instead, Signum issued `AUTO_BLOCK`, a human looked at the finding, restarted the pipeline. Full contract rebuild, full implementation, full audit — for a bug that's a one-line fix.
 
-## Iterative audit: review-fix loop
+## Loop 1: code — iterative audit
 
-Signum v4.6 adds a repair loop inside the AUDIT phase:
+Signum v4.6 adds a repair loop that bridges AUDIT and EXECUTE. When the audit finds MAJOR or CRITICAL findings, instead of blocking, it sends the engineer back to fix:
 
 ```
-AUDIT: review → findings → repair → re-review → ... → best candidate
+AUDIT → findings → re-enter EXECUTE (repair) → AUDIT → ... → PACK
 ```
 
-After the first audit pass (mechanic + Claude + Codex + Gemini), if there are MAJOR or CRITICAL findings, the engineer agent receives `repair_brief.json` — specific issues with files, lines, and descriptions. It fixes them. The audit reruns fully — not on the repair diff, but on the entire implementation from baseline.
+After the first audit pass (mechanic + Claude + Codex + Gemini), if there are actionable findings, the engineer agent receives `repair_brief.json`:
+
+```json
+{
+  "iteration": 1,
+  "findings": [
+    {
+      "id": "F-1",
+      "severity": "MAJOR",
+      "file": "src/api/tokens.py",
+      "line": 42,
+      "description": "Missing error response when rate limit storage is unavailable",
+      "source": "codex"
+    }
+  ]
+}
+```
+
+Important: `repair_brief.json` contains only observed defect symptoms from visible criteria and deterministic checks. Holdout failures are reported as behavioral observations ("function returns 200 when 429 expected") without revealing the hidden acceptance criteria. The data-level blinding from the original contract remains intact — the engineer never sees raw holdout text.
+
+The engineer fixes. The full audit reruns — not on the repair diff, but on the entire implementation from baseline. Then PACK produces the final proofpack as before.
 
 Key decisions:
 
@@ -36,11 +56,13 @@ Key decisions:
 
 **Early stop.** If two consecutive iterations show no improvement — stop. Maximum 20 iterations (configurable via `SIGNUM_AUDIT_MAX_ITERATIONS`). In practice, convergence happens in 2-3 passes.
 
-**Finding fingerprints.** Each finding gets a fingerprint. Between iterations, Signum tracks: resolved, persisting, new. This lets the synthesizer evaluate progress rather than just count findings.
+**Finding fingerprints.** Each finding gets a fingerprint based on file, line range, and issue type. Between iterations, Signum classifies every finding as resolved, persisting, or new. The synthesizer uses this to evaluate actual progress — not just "fewer findings" but "which specific issues were fixed and which appeared."
 
-## Contract self-critique
+**Hallucination filtering.** If a reviewer cites a line that doesn't exist in the diff or references a file outside scope, the finding is discarded. This is the same mechanism described in the [ecosystem post](/posts/en/heurema-ecosystem): every AI finding is validated against the actual diff before it enters the repair loop.
 
-The iterative audit fixes implementation. But what if the problem is in the contract itself?
+## Loop 2: contract — self-critique
+
+The code loop fixes implementation. But what if the problem is upstream — in the contract itself? A perfect implementation of a flawed spec is still a failure.
 
 For medium and high-risk tasks, the contractor now runs a 4-pass self-critique before showing the contract to the human:
 
@@ -67,9 +89,9 @@ The result is written to the contract:
 
 The human sees both the verdict and the full path to it. Not "the contractor decided the contract is good" — but what problems were found and how they were resolved.
 
-## Shared context across contracts
+## Loop 3: project — shared context across contracts
 
-Previous Signum versions treated contracts in isolation. Each task — a separate universe. In a real project, tasks are connected: they touch the same files, depend on the same decisions, use the same terminology.
+The code loop iterates within a single task. The contract loop iterates within a single spec. But previous Signum versions treated contracts in isolation. Each task — a separate universe. In a real project, tasks are connected: they touch the same files, depend on the same decisions, use the same terminology.
 
 Three new layers:
 
@@ -100,7 +122,7 @@ All scripts: JSON stdout, stderr for diagnostics, exit 0 for any check result (n
 
 Signum v3 answered "is this correct?" with a binary yes/no. v4.6 answers "can this be made correct?" — and if yes, does it.
 
-Numbers from our runs: ~60% of tasks that v3 blocked with AUTO_BLOCK, v4.6 brings to AUTO_OK in 2-3 iterations without human involvement. The remaining 40% are real spec or architecture problems that should escalate.
+In our early runs, a significant share of tasks that v3 blocked with AUTO_BLOCK, v4.6 brings to AUTO_OK in 2-3 iterations without human involvement. The tasks that still block tend to be real spec or architecture problems — exactly what should escalate to a human.
 
 Verification isn't a gate at the end of the pipeline. It's a loop. The same principle as human code review: finding → fix → re-check. The difference is that AI can run this loop in seconds, not days.
 
