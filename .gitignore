@@ -37,3 +37,8 @@ coverage/
 *.temp
 apps/video/out/
 apps/video/public/generated/
+.signum/
+
+# Dolt database files (added by bd init)
+.dolt/
+*.db
