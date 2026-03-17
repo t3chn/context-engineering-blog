@@ -1,98 +1,76 @@
 ---
-title: "Как формальный верификатор вдохновил 6 улучшений кодового аудита"
-description: "Leanstral от Mistral -- агент для Lean 4 -- подсказал конкретные паттерны для Signum: policy scanner, typed diagnostics, параллельные repair lanes."
+title: "Чему формальный верификатор научил меня о кодовом аудите"
+description: "Изучение Leanstral от Mistral -- агента для доказательства теорем на Lean 4 -- привело к конкретным улучшениям Signum, пайплайна мультимодельного код-ревью."
 date: 2026-03-17
 tags: ["context-engineering", "claude-code", "signum", "verification", "agents"]
 lang: ru
 ---
 
-Утренний дайджест принёс Leanstral -- open-source агент от Mistral для формальной верификации на Lean 4. Модель на 119B параметров, из которых активны только 6.5B, решает задачи доказательства теорем за 1/92 стоимости Claude Opus.
+Утренний дайджест принёс [Leanstral](https://mistral.ai/news/leanstral) -- open-source агент от Mistral для формальной верификации на Lean 4. Mixture-of-experts модель (119B параметров, 6.5B активных на токен), которая на бенчмарке FLTEval для доказательства теорем набирает 80% от Claude Opus при доле его стоимости.
 
-Сам Lean 4 мне не нужен. Но архитектура агента оказалась полезной: multi-attempt proof search, diagnostic feedback loop, structured verification -- паттерны, которые напрямую переносятся на кодовый аудит. За день я реализовал шесть из них в Signum v4.9.0.
+Lean 4 мне не нужен. Но архитектура агента оказалась полезной: параллельный поиск доказательств, структурированная обратная связь, верификация как отдельный шаг. Три паттерна хорошо перенеслись на мой пайплайн кодового аудита. Ещё три улучшения родились в той же дизайн-сессии.
 
-## Что взял из Leanstral
+**Что такое Signum.** [Signum](https://github.com/heurema/signum) -- плагин для Claude Code, который превращает запросы на фичи в верифицируемые артефакты. Четыре фазы: Contractor пишет контракт (спецификация + критерии приёмки), Engineer реализует, три независимые AI-модели проводят аудит (Claude -- семантика, Codex -- безопасность, Gemini -- производительность), Synthesizer выносит вердикт. Пайплайн итеративный: если аудит находит проблемы, Engineer получает repair brief и пробует снова. Результат -- proofpack: self-contained пакет с контрактом, диффом, находками ревью и решением.
 
-Leanstral работает через MCP-сервер `lean-lsp-mcp`, который даёт агенту доступ к Language Server Protocol Lean 4. Пять фаз: Discovery (найти proof holes) -> Analysis (извлечь subgoals) -> Retrieval (поиск по Mathlib) -> Synthesis (подставить тактику) -> Diagnostic Feedback (ошибка -> корректировка).
+## Три паттерна из Leanstral
 
-Три паттерна оказались полезны для Signum:
+Leanstral работает через [MCP-сервер](https://github.com/oOo0oOo/lean-lsp-mcp), который подключает агента к Language Server Protocol Lean 4. Пять фаз -- найти пробелы в доказательстве, извлечь подцели, найти леммы в библиотеке, подставить тактику, проверить диагностику -- структурированный цикл generate-verify. Три элемента легли на Signum:
 
-**1. `lean_verify` -- верификация как отдельный шаг.** Lean проверяет не только "компилируется ли", но и "корректно ли используются аксиомы". В Signum аналогом стал policy scanner -- детерминистический grep на diff до LLM-ревью.
+**1. Верификация до ревью.** Lean проверяет не "компилируется ли доказательство", а "проходит ли оно type-check под ядром". В Signum аналог -- policy scanner: детерминистический grep на дифф, который запускается *до* LLM-ревьюеров, ловя security и unsafe паттерны при нулевой стоимости токенов.
 
-**2. `lean_multi_attempt` -- параллельные попытки.** Lean подставляет несколько тактик на одну позицию и сравнивает goal states. В Signum -- параллельные repair lanes с разными стратегиями фикса.
+**2. Параллельные попытки.** Lean-тул `multi_attempt` подставляет несколько тактик на одну позицию и сравнивает результирующие goal states. В Signum -- параллельные repair lanes: два Engineer-агента в изолированных git worktrees с разными стратегиями фикса.
 
-**3. Diagnostic feedback loop -- structured обратная связь.** Lean LSP возвращает типизированные ошибки, а не raw text. В Signum -- typed diagnostics от mechanic вместо flat boolean.
+**3. Типизированные диагностики.** Lean LSP возвращает структурированные объекты ошибок (файл, строка, сообщение, severity), а не raw text. В Signum механик теперь выдаёт hybrid формат с типизированными findings вместо flat "regressions: true/false".
 
-## Policy scanner: grep вместо LLM
+## Policy Scanner
 
-Самое дешёвое улучшение. Между mechanic (lint/typecheck/tests) и code review появился Step 3.1.3 -- `lib/policy-scanner.sh`. Bash-скрипт, 195 строк, zero LLM cost.
+Самое дешёвое улучшение. Между механиком (lint, typecheck, tests) и мультимодельным код-ревью появился bash-скрипт, который сканирует unified diff на известные опасные паттерны. 195 строк, ноль LLM-токенов.
 
-Сканирует только addition lines в unified diff. 12 паттернов в трёх категориях:
+Сканирует только addition lines. 12 паттернов в трёх категориях:
 
-- **Security** (CRITICAL): `eval`, `subprocess.call` с `shell=True`, `innerHTML`, SQL injection через конкатенацию, weak crypto (`md5`, `sha1`)
-- **Unsafe** (MINOR): `TODO`/`FIXME`/`HACK`, `console.log`, `debugger`
-- **Dependency** (MAJOR): новые записи в `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod` -- только в manifest-файлах
+- **Security** (блокирует пайплайн): `eval`, subprocess с `shell=True`, `innerHTML`, SQL конкатенация, weak crypto
+- **Unsafe** (флаг для ревью): `TODO`/`FIXME`/`HACK`, debug-вывод
+- **Dependency** (флаг для ревью): новые записи в пакетных менеджерах -- но только если файл действительно manifest (`package.json`, `Cargo.toml` и т.д.), а не README или тестовая фикстура
 
-CRITICAL policy finding триггерит AUTO_BLOCK в synthesizer -- наравне с mechanic regressions.
+Три дизайн-решения пришли из "arbiter panel" -- независимого опроса Codex (GPT) и Gemini с последующим сравнением ответов (все три модели -- Claude, Codex, Gemini -- согласились по каждому):
 
-Три дизайн-решения принял через arbiter panel (Codex + Gemini, 3/3 консенсус):
+1. **Fail-closed** при отсутствии входных данных. Нет диффа -- ошибка, а не "ноль находок".
+2. **Фильтрация по имени файла** для dependency паттернов. Без неё любая JSON key-value пара в любом файле даёт false positive.
+3. **Curated sinks** вместо широких regex. Короткий список опасных вызовов (`subprocess.call`, `child_process.spawn`) лучше, чем generic паттерн, который ловит безобидный `db.query()`.
 
-1. **Fail-closed** на missing patch (exit 1, не exit 0). Отсутствие патча -- pipeline integrity failure, а не "zero findings".
-2. **Manifest-only** для dependency patterns. Без фильтра по имени файла ловятся README, тесты, комментарии.
-3. **Curated sinks** вместо generic `exec`/`print`. Short list high-signal вызовов лучше, чем широкие regex с низким precision.
+## Типизированные диагностики
 
-## Typed diagnostics: structured mechanic output
+До этого изменения отчёт механика был flat: lint прошёл или нет, тесты прошли или нет, регрессии да или нет. Engineer в repair mode получал это как blob и угадывал, какой файл и строку чинить.
 
-До v4.9 mechanic report был flat: `{lint: {status, exitCode, regression}, tests: {...}, hasRegressions: bool}`. Engineer в repair mode получал это как blob.
+Теперь механик выдаёт hybrid формат: summary по каждой проверке всегда + per-file findings когда runner поддерживает structured output. У каждого finding поле `origin` -- `"structured"` для JSON (ruff, eslint), `"stable_text"` для парсабельного текста (tsc, mypy), `"none"` для summary only. Гейтинг по summary; findings -- подсказки для инженера, не source of truth.
 
-Теперь `lib/mechanic-parser.sh` выдаёт hybrid формат: summary per check всегда + per-file findings когда runner поддерживает structured output.
+Отступление о ловле багов собственным пайплайном: Claude Opus нашёл критическую проблему на первом же ревью этой фичи. `|| true` после command substitution маскировал exit code, делая возвращаемое значение всегда нулевым. Regression detection была мертва для всех восьми поддерживаемых runners. Один токен. Iterative repair починил за один проход -- именно та конвергенция, для которой система создана.
 
-```json
-{
-  "checks": [
-    {"id": "tsc", "category": "typecheck", "status": "fail",
-     "baseline_status": "pass", "regression": true, "count": 3,
-     "findings_available": true}
-  ],
-  "findings": [
-    {"check_id": "tsc", "file": "src/foo.ts", "line": 42,
-     "code": "TS2322", "message": "Type 'X' is not assignable to 'Y'",
-     "origin": "structured"}
-  ]
-}
-```
+## Параллельные repair lanes
 
-`origin` -- ключевое поле. `"structured"` = JSON output (ruff, eslint). `"stable_text"` = парсабельный текст (tsc, mypy). `"none"` = только summary. Gating и regression detection -- по summary. Findings -- repair hints для engineer, не source of truth.
+Самое сложное изменение. Раньше repair loop был последовательным: одна попытка Engineer, аудит, следующая попытка. Теперь спавнятся два Engineer'а параллельно, каждый в изолированном git worktree:
 
-Claude Opus поймал критический баг в первом же ревью: `|| true` после command substitution маскировал exit code, делая regression detection полностью нерабочей для всех 8 runners. Один символ ломал всю mechanic фазу. Iterative repair починил за одну итерацию.
+- **Lane A**: "Почини минимальными точечными изменениями. Только помеченные строки."
+- **Lane B**: "Почини корневую причину. Можно затронуть больше файлов."
 
-## Parallel repair lanes
+Оба получают один repair brief. После завершения пайплайн прогоняет легковесные проверки (lint, typecheck, тесты, скрытые валидационные сценарии) на каждом lane, скорит их, и отправляет только победителя через полное трёхмодельное ревью. Если у победителя серьёзные находки -- ревью получает и второй lane.
 
-Самая сложная фича. Раньше repair loop -- последовательный: одна попытка фикса -> аудит -> следующая попытка. Теперь Step 3.6.2 спавнит два Engineer агента параллельно в git worktrees:
+Тот же принцип, что у Lean `multi_attempt`: исследуй пространство решений параллельно, выбери лучшего, верифицируй один раз.
 
-- **Lane A**: "Fix with minimal targeted changes. Patch only the specific lines."
-- **Lane B**: "Fix by addressing the root cause. May touch more files."
+## Ещё три изменения
 
-Оба получают один `repair_brief.json`. Оба работают в изолированных worktrees, seeded от текущего best candidate. После завершения:
+Эти пришли из той же дизайн-сессии, но не связаны с Leanstral напрямую:
 
-1. Mechanic + holdout на каждом lane
-2. Score по формуле `iterationScore`
-3. Full review panel только на winner
-4. Если winner получает MAJOR+ -- review ещё и на runner-up
+**Dynamic strategy injection.** Contractor теперь классифицирует тип задачи (bugfix, feature, refactor, security) через keyword scan и генерирует strategy hint в контракте. Engineer читает как процесс-гайд: "сначала воспроизведи баг тестом" для багфиксов, "найди все вхождения паттерна, а не только одно" для security фиксов. Информативное -- не блокирует пайплайн.
 
-Вдохновлено `lean_multi_attempt`, который подставляет несколько тактик на одну позицию и сравнивает оставшиеся subgoals. Тот же принцип: explore solution space, select best, verify once.
+**Context retrieval для ревьюеров.** Новый pre-review шаг собирает: git history (последний коммит per file), ссылки на issues (парсятся из goal), project.intent.md. Всё инжектится только в Claude ревьюер -- Codex и Gemini остаются изолированными (goal + diff only), сохраняя ценность как независимые валидаторы. Цель -- снизить false positives, дав семантическому ревьюеру контекст "почему код такой".
 
-## Остальные три
+**Approval UX.** Мелкий фикс: отображение контракта при утверждении теперь в markdown вместо фрагментированного bash-вывода. Goal не обрезается, таблица компактная, warnings сгруппированы.
 
-**Dynamic strategy injection.** Contractor классифицирует тип задачи (bugfix/feature/refactor/security) через keyword scan и генерирует `implementationStrategy` в контракте. Engineer читает как process guide: bugfix -> "reproduce bug with test first", security -> "find all occurrences, not just reported one". Informational only -- не блокирует pipeline.
+## Что я вынес
 
-**Context retrieval.** Новый Step 3.2.0 перед code review собирает: git history (последний коммит per file), issue refs (ID + title), project.intent.md. Всё это инжектится только в Claude reviewer -- Codex и Gemini остаются adversarially isolated. Цель: уменьшить false positives за счёт контекста "почему код такой".
+Каждая фича прошла через полный пайплайн: дизайн-панель, контракт, реализация, трёхмодельный аудит, iterative repair. Из шести прогонов только один прошёл с первой попытки (самое простое изменение). Остальные потребовали 2-3 итерации.
 
-**Approval UX.** Мелочь, но заметная: замена фрагментированных bash echo блоков на markdown-first display при утверждении контракта. Goal больше не обрезается, таблица компактная, warnings сгруппированы.
+Паттерн: первый проход Engineer'а проходит все acceptance criteria, но код-ревью находит реальные баги -- маскировка exit code, race condition на shared paths, отсутствующие field mappings. Iterative loop чинит их за 1-2 прохода. В этой выборке из шести изменений система вела себя как задумано: не gatekeeping checkpoint, а convergence loop.
 
-## Процесс
-
-Каждая фича прошла через полный pipeline: arbiter panel -> signum contract -> engineer -> 3-model audit -> iterative repair -> proofpack. Из шести запусков только один получил AUTO_OK с первого прохода (dynamic strategy -- самая простая). Остальные потребовали 2-3 итерации.
-
-Общий паттерн: первый проход Engineer'а проходит все AC, но code review находит баги -- от `|| true` маскировки exit code до race condition на shared paths в параллельных worktrees. Iterative repair чинит их за 1-2 итерации. Система работает как задумано: не gatekeeping, а convergence loop.
-
-Весь день: 7 коммитов, ~1900 строк, 5 arbiter panels (Codex + Gemini, 4 из 5 -- unanimous consensus), 15+ multi-model review rounds. Начало -- одна строка из утреннего дайджеста.
+Вся сессия: 7 коммитов, ~1900 строк, 5 дизайн-панелей, 15+ раундов мультимодельного ревью. Начало -- одна строка из утреннего дайджеста.

@@ -1,98 +1,76 @@
 ---
-title: "How a Formal Verifier Inspired 6 Improvements to Code Audit"
-description: "Mistral's Leanstral -- an agent for Lean 4 -- suggested concrete patterns for Signum: policy scanner, typed diagnostics, parallel repair lanes."
+title: "What a Formal Verification Agent Taught Me About Code Audit"
+description: "Studying Mistral's Leanstral -- an agent for Lean 4 theorem proving -- led to concrete improvements in Signum, a multi-model code audit pipeline."
 date: 2026-03-17
 tags: ["context-engineering", "claude-code", "signum", "verification", "agents"]
 lang: en
 ---
 
-The morning digest surfaced Leanstral -- Mistral's open-source agent for formal verification in Lean 4. A 119B parameter model with only 6.5B active, solving theorem proving tasks at 1/92 the cost of Claude Opus.
+The morning digest surfaced [Leanstral](https://mistral.ai/news/leanstral) -- Mistral's open-source agent for formal verification in Lean 4. A mixture-of-experts model (119B total, 6.5B active per token) that scores within 80% of Claude Opus on the FLTEval theorem-proving benchmark at a fraction of the cost.
 
-I don't need Lean 4 itself. But the agent's architecture proved useful: multi-attempt proof search, diagnostic feedback loops, structured verification -- patterns that transfer directly to code audit. In one day, I implemented six of them in Signum v4.9.0.
+I don't need Lean 4. But the agent's architecture proved useful: multi-attempt proof search, diagnostic feedback loops, structured verification. Three of these patterns transferred well to my code audit pipeline. The other three improvements came from the same design session.
 
-## What I Took from Leanstral
+**A word on Signum.** [Signum](https://github.com/heurema/signum) is a plugin for Claude Code that turns feature requests into verifiable artifacts. It works in four phases: a Contractor agent writes a contract (spec + acceptance criteria), an Engineer agent implements it, three independent AI models audit the result (Claude for semantics, Codex for security, Gemini for performance), and a Synthesizer produces a final verdict. The pipeline iterates: if the audit finds issues, the Engineer gets a repair brief and tries again. The output is a proofpack -- a self-contained bundle of contract, diff, review findings, and decision.
 
-Leanstral works through the `lean-lsp-mcp` MCP server, which gives the agent access to Lean 4's Language Server Protocol. Five phases: Discovery (find proof holes) -> Analysis (extract subgoals) -> Retrieval (search Mathlib) -> Synthesis (try tactics) -> Diagnostic Feedback (error -> correction).
+## Three Patterns from Leanstral
 
-Three patterns translated to Signum:
+Leanstral works through an [MCP server](https://github.com/oOo0oOo/lean-lsp-mcp) that connects the agent to Lean 4's Language Server Protocol. Its five-phase loop -- discover proof gaps, analyze subgoals, search the library for relevant lemmas, synthesize a tactic, check diagnostics -- is a structured generate-verify cycle. Three elements mapped to Signum:
 
-**1. `lean_verify` -- verification as a separate step.** Lean checks not just "does it compile" but "are axioms used correctly." In Signum, the analogue became a policy scanner -- deterministic grep on the diff before LLM review.
+**1. Verification before review.** Lean doesn't just check "does the proof compile" -- it verifies that the proof actually type-checks under the kernel. In Signum, the analogue became a policy scanner: a deterministic grep on the diff that runs *before* the LLM reviewers, catching security and unsafe patterns at zero token cost.
 
-**2. `lean_multi_attempt` -- parallel attempts.** Lean substitutes multiple tactics at one position and compares goal states. In Signum -- parallel repair lanes with different fix strategies.
+**2. Parallel attempts.** Lean's `multi_attempt` tool substitutes several tactics at one position and compares the resulting goal states. In Signum, this became parallel repair lanes -- two Engineer agents working in isolated git worktrees with different fix strategies.
 
-**3. Diagnostic feedback loop -- structured feedback.** Lean LSP returns typed errors, not raw text. In Signum -- typed diagnostics from mechanic instead of a flat boolean.
+**3. Typed diagnostics.** Lean LSP returns structured error objects (file, line, message, severity), not raw text. In Signum, the mechanic phase now returns a hybrid format with typed findings instead of a flat "regressions: true/false" boolean.
 
-## Policy Scanner: grep Instead of LLM
+## Policy Scanner
 
-The cheapest improvement. Between mechanic (lint/typecheck/tests) and code review, Step 3.1.3 appeared -- `lib/policy-scanner.sh`. A bash script, 195 lines, zero LLM cost.
+The cheapest improvement. Between the mechanic step (lint, typecheck, tests) and the multi-model code review, a new bash script scans the unified diff for known dangerous patterns. 195 lines, zero LLM cost.
 
-Scans only addition lines in unified diff. 12 patterns in three categories:
+It scans only addition lines. 12 patterns in three categories:
 
-- **Security** (CRITICAL): `eval`, `subprocess.call` with `shell=True`, `innerHTML`, SQL injection via concatenation, weak crypto (`md5`, `sha1`)
-- **Unsafe** (MINOR): `TODO`/`FIXME`/`HACK`, `console.log`, `debugger`
-- **Dependency** (MAJOR): new entries in `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod` -- manifest files only
+- **Security** (blocks the pipeline): `eval`, subprocess with `shell=True`, `innerHTML`, SQL string concatenation, weak crypto
+- **Unsafe** (flagged for review): `TODO`/`FIXME`/`HACK` markers, debug statements
+- **Dependency** (flagged for review): new entries in package managers -- but only when the file is actually a manifest (`package.json`, `Cargo.toml`, etc.), not a README or test fixture
 
-A CRITICAL policy finding triggers AUTO_BLOCK in the synthesizer -- same as mechanic regressions.
+Three design decisions came from asking Codex (GPT) and Gemini independently, then comparing answers -- a process I call an "arbiter panel" (all three models -- Claude, Codex, Gemini -- agreed on each):
 
-Three design decisions via arbiter panel (Codex + Gemini, 3/3 consensus):
+1. **Fail-closed** on missing input. If the diff file doesn't exist, the scanner exits with an error rather than silently producing zero findings.
+2. **Manifest-only filtering** for dependency patterns. Without it, any JSON key-value pair in any file triggers a false positive.
+3. **Curated sinks** over broad regexes. A short list of known-dangerous calls (`subprocess.call`, `child_process.spawn`) beats a generic pattern that matches harmless calls like `db.query()`.
 
-1. **Fail-closed** on missing patch (exit 1, not exit 0). A missing patch is a pipeline integrity failure, not "zero findings."
-2. **Manifest-only** for dependency patterns. Without filename filtering, you catch READMEs, tests, comments.
-3. **Curated sinks** instead of generic `exec`/`print`. A short list of high-signal calls beats broad regexes with low precision.
+## Typed Diagnostics
 
-## Typed Diagnostics: Structured Mechanic Output
+Before this change, the mechanic report was a flat summary: lint passed or failed, tests passed or failed, regressions yes or no. The Engineer agent in repair mode received this as a blob and had to guess which file and line to fix.
 
-Before v4.9, the mechanic report was flat: `{lint: {status, exitCode, regression}, tests: {...}, hasRegressions: bool}`. The Engineer in repair mode received it as a blob.
+Now the mechanic produces a hybrid format: always a summary per check, plus per-file findings when the runner supports structured output. Each finding carries an `origin` field -- `"structured"` for JSON output (ruff, eslint), `"stable_text"` for parseable text (tsc, mypy), or `"none"` for summary only. The pipeline gates on the summary; findings are hints, not source of truth.
 
-Now `lib/mechanic-parser.sh` produces a hybrid format: summary per check always + per-file findings when the runner supports structured output.
-
-```json
-{
-  "checks": [
-    {"id": "tsc", "category": "typecheck", "status": "fail",
-     "baseline_status": "pass", "regression": true, "count": 3,
-     "findings_available": true}
-  ],
-  "findings": [
-    {"check_id": "tsc", "file": "src/foo.ts", "line": 42,
-     "code": "TS2322", "message": "Type 'X' is not assignable to 'Y'",
-     "origin": "structured"}
-  ]
-}
-```
-
-`origin` is the key field. `"structured"` = JSON output (ruff, eslint). `"stable_text"` = parseable text (tsc, mypy). `"none"` = summary only. Gating and regression detection use summary. Findings are repair hints for the engineer, not source of truth.
-
-Claude Opus caught a critical bug on the very first review: `|| true` after command substitution masked the exit code, making regression detection completely broken for all 8 runners. One token broke the entire mechanic phase. Iterative repair fixed it in one iteration.
+An aside on catching bugs with the pipeline itself: Claude Opus found a critical issue on the very first review of this feature. A `|| true` after a command substitution silently masked the exit code, making the return value always zero. Regression detection was dead for all eight supported runners. One token. The iterative repair loop fixed it in a single pass -- exactly the kind of convergence the system is built for.
 
 ## Parallel Repair Lanes
 
-The most complex feature. Previously the repair loop was sequential: one fix attempt -> audit -> next attempt. Now Step 3.6.2 spawns two Engineer agents in parallel git worktrees:
+The most complex change. Previously, the repair loop was sequential: one Engineer attempt, audit, next attempt. Now it spawns two Engineers in parallel, each in an isolated git worktree:
 
-- **Lane A**: "Fix with minimal targeted changes. Patch only the specific lines."
+- **Lane A**: "Fix with minimal targeted changes. Patch only the flagged lines."
 - **Lane B**: "Fix by addressing the root cause. May touch more files."
 
-Both receive the same `repair_brief.json`. Both work in isolated worktrees, seeded from the current best candidate. After completion:
+Both receive the same repair brief. After both complete, the pipeline runs lightweight checks (lint, typecheck, tests, hidden validation scenarios) on each lane, scores them, and sends only the winner through the full three-model review. If the winner still has serious findings, the runner-up also gets reviewed before the iteration is declared failed.
 
-1. Mechanic + holdout on each lane
-2. Score using the `iterationScore` formula
-3. Full review panel on winner only
-4. If winner gets MAJOR+ -- also review the runner-up
+Same principle as Lean's `multi_attempt`: explore the solution space in parallel, select the best candidate, verify once.
 
-Inspired by `lean_multi_attempt`, which substitutes multiple tactics at one position and compares remaining subgoals. Same principle: explore solution space, select best, verify once.
+## Three More Changes
 
-## The Other Three
+These came from the same design session but aren't directly Leanstral-inspired:
 
-**Dynamic strategy injection.** The Contractor classifies task type (bugfix/feature/refactor/security) via keyword scan and generates `implementationStrategy` in the contract. The Engineer reads it as a process guide: bugfix -> "reproduce bug with test first," security -> "find all occurrences, not just the reported one." Informational only -- doesn't block the pipeline.
+**Dynamic strategy injection.** The Contractor agent now classifies the task type (bugfix, feature, refactor, security) via keyword scan and generates a strategy hint in the contract. The Engineer reads it as a process guide -- "reproduce bug with a test first" for bugfixes, "find all occurrences of the pattern, not just the reported one" for security fixes. Informational only; it doesn't block the pipeline.
 
-**Context retrieval.** New Step 3.2.0 before code review gathers: git history (last commit per file), issue refs (ID + title), project.intent.md. All injected into the Claude reviewer only -- Codex and Gemini remain adversarially isolated. Goal: reduce false positives through context about "why the code is this way."
+**Context retrieval for reviewers.** A new pre-review step gathers git history (last commit per modified file), issue references (parsed from the goal text), and the project's intent document. This context is injected only into the Claude reviewer -- Codex and Gemini remain isolated (goal + diff only), preserving their value as independent validators. The intent is to reduce false positives by giving the semantic reviewer context about *why* the code looks the way it does.
 
-**Approval UX.** Small but noticeable: replacing fragmented bash echo blocks with markdown-first display during contract approval. Goal is never truncated, table is compact, warnings are grouped.
+**Approval UX.** A small fix: the contract approval display now uses markdown formatting instead of fragmented bash output. The goal text is never truncated, the summary is a compact table, and warnings are grouped.
 
-## The Process
+## What I Learned
 
-Every feature went through the full pipeline: arbiter panel -> signum contract -> engineer -> 3-model audit -> iterative repair -> proofpack. Of six runs, only one got AUTO_OK on the first pass (dynamic strategy -- the simplest). The rest required 2-3 iterations.
+Each feature went through the full pipeline: design panel, contract, implementation, three-model audit, iterative repair. Of six runs, only one passed on the first attempt (the simplest change). The rest required two to three iterations.
 
-The general pattern: the Engineer's first pass satisfies all ACs, but code review finds bugs -- from `|| true` exit code masking to race conditions on shared paths in parallel worktrees. Iterative repair fixes them in 1-2 iterations. The system works as designed: not gatekeeping, but a convergence loop.
+The pattern that emerged: the Engineer's first pass satisfies all acceptance criteria, but code review surfaces real bugs -- exit code masking, race conditions on shared file paths, missing field mappings. The iterative loop fixes them in one or two passes. In this sample of six changes, the system behaved as intended: not a gatekeeping checkpoint, but a convergence loop.
 
-The full day: 7 commits, ~1,900 lines, 5 arbiter panels (Codex + Gemini, 4 of 5 unanimous), 15+ multi-model review rounds. Started from one line in the morning digest.
+The full session: 7 commits, roughly 1,900 lines of changes, 5 design panels, over 15 multi-model review rounds. It started from one line in a morning news digest.
