@@ -1,9 +1,12 @@
 ---
+
 title: "What a Formal Verification Agent Taught Me About Code Audit"
 description: "Studying Mistral's Leanstral -- an agent for Lean 4 theorem proving -- led to concrete improvements in Signum, a multi-model code audit pipeline."
 date: 2026-03-17
 tags: ["context-engineering", "claude-code", "signum", "verification", "agents"]
 lang: en
+hashnode_id: 69b940120095f937d162353e
+hashnode_url: "https://t3chn.hashnode.dev/what-a-formal-verification-agent-taught-me-about-code-audit"
 ---
 
 The morning digest surfaced [Leanstral](https://mistral.ai/news/leanstral) -- Mistral's open-source agent for formal verification in Lean 4. A mixture-of-experts model (119B total, 6.5B active per token) that scores within 80% of Claude Opus on the FLTEval theorem-proving benchmark at a fraction of the cost.
