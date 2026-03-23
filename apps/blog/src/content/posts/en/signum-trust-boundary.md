@@ -1,14 +1,19 @@
 ---
-title: "My AI Agent Said 'Done.' It Skipped an Entire Acceptance Criterion."
-description: The hardest bug was not in the code. It was in the trust model between the engineer agent and the orchestrator.
+title: My AI Agent Said 'Done.' It Skipped an Entire Acceptance Criterion.
+description: The hardest bug was not in the code. It was in the trust model between
+  the engineer agent and the orchestrator.
 date: 2026-03-23
 tags:
-  - context-engineering
-  - claude-code
-  - verification
-  - trust-boundary
+- context-engineering
+- claude-code
+- verification
+- trust-boundary
 canonical_url: https://ctxt.dev/posts/en/signum-trust-boundary/
 lang: en
+devto_id: 3387841
+devto_url: https://dev.to/t3chn/my-ai-agent-said-done-it-skipped-an-entire-acceptance-criterion-46f9
+hashnode_id: 69c0fab761ba27cd4a6deb11
+hashnode_url: https://t3chn.hashnode.dev/my-ai-agent-said-done-it-skipped-an-entire-acceptance-criterion
 ---
 
 Last week, our pipeline produced a proofpack with `decision: HUMAN_REVIEW`. The contract had 10 acceptance criteria. The engineer agent created all the new files, build passed, tests passed, three independent reviewers ran. Everything looked correct — except AC18.3, which required rewriting an existing endpoint's response schema. The engineer never touched `health.go`. The pipeline said SUCCESS.
