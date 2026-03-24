@@ -1,5 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import ProductCTA from "../components/ProductCTA.astro";
+import SidebarProducts from "../components/SidebarProducts.astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 
@@ -120,6 +122,9 @@ const jsonLd = {
         <slot />
       </div>
 
+      <!-- Product CTA -->
+      <ProductCTA postTags={tags} lang={lang} />
+
       <!-- Navigation -->
       <nav aria-label="Post navigation" class="mt-16 border-t border-[var(--color-border)] pt-8">
         <div class="grid gap-4 sm:grid-cols-2">
@@ -175,6 +180,9 @@ const jsonLd = {
             </p>
           </nav>
         </div>
+
+        <!-- Products -->
+        <SidebarProducts lang={lang} />
 
         <!-- Telegram CTA -->
         <div

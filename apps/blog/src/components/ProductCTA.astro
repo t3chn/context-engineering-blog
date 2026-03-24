@@ -1,0 +1,87 @@
+---
+interface Product {
+  name: string;
+  tagline: string;
+  url: string;
+  github?: string;
+  cta: string;
+  tags: string[];
+}
+
+const products: Product[] = [
+  {
+    name: "Signum",
+    tagline: "Contract-first AI dev pipeline. Write specs, not prompts — get verified code.",
+    url: "https://github.com/heurema/signum",
+    github: "heurema/signum",
+    cta: "Try Signum",
+    tags: ["signum", "contract-first", "verification", "agents", "claude-code", "context-engineering"],
+  },
+  {
+    name: "Context8",
+    tagline: "Crypto market data API for AI agents. Funding rates, OI, screeners, macro pulse.",
+    url: "https://context8.markets",
+    cta: "Get API Key",
+    tags: ["crypto", "trading", "market-data", "api", "saas", "golang"],
+  },
+  {
+    name: "Nex",
+    tagline: "Cross-CLI plugin distribution. Ship skills to Claude Code, Codex, Gemini — one command.",
+    url: "https://github.com/heurema/nex",
+    github: "heurema/nex",
+    cta: "Install Nex",
+    tags: ["nex", "plugins", "skills", "distribution", "rust", "cli"],
+  },
+  {
+    name: "Delve",
+    tagline: "Deep research orchestrator. Parallel agents, claim verification, source tracking.",
+    url: "https://github.com/heurema/delve",
+    github: "heurema/delve",
+    cta: "Try Delve",
+    tags: ["delve", "research", "agents", "verification"],
+  },
+];
+
+interface Props {
+  postTags: string[];
+  lang: string;
+}
+
+const { postTags, lang } = Astro.props;
+
+function scoreProduct(product: Product, postTags: string[]): number {
+  return product.tags.filter(t => postTags.includes(t)).length;
+}
+
+const scored = products
+  .map(p => ({ ...p, score: scoreProduct(p, postTags) }))
+  .filter(p => p.score > 0)
+  .sort((a, b) => b.score - a.score);
+
+const picked = scored.length > 0 ? scored[0] : products[0];
+
+const heading = lang === "ru" ? "Попробуйте" : "Build with";
+---
+
+<div class="not-prose mt-12 rounded-lg border border-accent-500/20 bg-accent-500/5 p-6">
+  <p class="mb-1 font-mono text-xs uppercase tracking-wider text-[var(--color-text-secondary)]">
+    {heading}
+  </p>
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="text-lg font-semibold text-[var(--color-text)]">{picked.name}</p>
+      <p class="text-sm text-[var(--color-text-secondary)]">{picked.tagline}</p>
+    </div>
+    <a
+      href={picked.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex shrink-0 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 py-2.5 font-mono text-sm font-medium text-white transition-opacity hover:opacity-90"
+    >
+      {picked.cta}
+      <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+      </svg>
+    </a>
+  </div>
+</div>

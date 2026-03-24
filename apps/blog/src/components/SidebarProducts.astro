@@ -1,0 +1,39 @@
+---
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+
+const heading = lang === "ru" ? "Инструменты" : "Tools";
+
+const tools = [
+  { name: "Signum", desc: lang === "ru" ? "AI dev pipeline" : "AI dev pipeline", url: "https://github.com/heurema/signum" },
+  { name: "Context8", desc: lang === "ru" ? "Crypto data API" : "Crypto data API", url: "https://context8.markets" },
+  { name: "Nex", desc: lang === "ru" ? "Plugin distribution" : "Plugin distribution", url: "https://github.com/heurema/nex" },
+];
+---
+
+<div class="mt-6 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-5">
+  <p class="mb-3 font-mono text-xs uppercase tracking-wider text-[var(--color-text-secondary)]">
+    {heading}
+  </p>
+  <div class="space-y-2.5">
+    {tools.map(tool => (
+      <a
+        href={tool.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent-500/5"
+      >
+        <span>
+          <span class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-accent)]">{tool.name}</span>
+          <span class="ml-1.5 text-[var(--color-text-secondary)]">{tool.desc}</span>
+        </span>
+        <svg aria-hidden="true" class="h-3 w-3 shrink-0 text-[var(--color-text-secondary)] opacity-0 transition-all group-hover:opacity-100 group-hover:text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+        </svg>
+      </a>
+    ))}
+  </div>
+</div>
