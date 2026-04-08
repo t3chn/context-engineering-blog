@@ -190,7 +190,9 @@ const currentPath = Astro.url.pathname;
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
           <!-- Left: Copyright -->
           <p class="text-sm text-[var(--color-text-secondary)] font-mono">
-            &copy; {new Date().getFullYear()} ctxt.dev
+            &copy; {new Date().getFullYear()} ctxt.dev · {
+              lang === "ru" ? "5k+ читателей в месяц" : "5k+ monthly readers"
+            }
           </p>
 
           <!-- Right: Links -->
