@@ -1,0 +1,62 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const telegramUrl = "https://t.me/ctxtdev";
+---
+
+<BaseLayout title="Партнёрство с ctxt.dev" lang="ru">
+  <section aria-label="Sponsor hero" class="mb-12">
+    <p class="mb-2 font-mono text-sm uppercase tracking-widest text-[var(--color-accent)]">
+      Партнёрство
+    </p>
+    <h1 class="text-4xl font-bold tracking-tight text-[var(--color-text)] sm:text-5xl">
+      Партнёрство с ctxt.dev
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--color-text-secondary)]">
+      ctxt.dev - нишевый блог про AI agents, context engineering и toolchains. У сайта 5k+ читателей
+      в месяц и 100+ читателей в день, с инженерной аудиторией.
+    </p>
+  </section>
+
+  <section class="grid gap-6 md:grid-cols-2">
+    <article
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+    >
+      <h2 class="text-xl font-semibold text-[var(--color-text)]">Что подходит</h2>
+      <ul class="mt-4 space-y-3 text-[var(--color-text-secondary)]">
+        <li>AI agent infrastructure и developer tools</li>
+        <li>Observability, security, evals и deployment tooling</li>
+        <li>APIs, data products и платформы для builders</li>
+      </ul>
+    </article>
+
+    <article
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+    >
+      <h2 class="text-xl font-semibold text-[var(--color-text)]">Форматы</h2>
+      <ul class="mt-4 space-y-3 text-[var(--color-text-secondary)]">
+        <li>Упоминание партнёра на сайте</li>
+        <li>Упоминание в Telegram, если продукт реально подходит аудитории</li>
+        <li>Индивидуальный формат под запуск, исследование или узкую builder-аудиторию</li>
+      </ul>
+    </article>
+  </section>
+
+  <section
+    class="mt-6 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+  >
+    <h2 class="text-xl font-semibold text-[var(--color-text)]">Как связаться</h2>
+    <p class="mt-3 max-w-2xl text-[var(--color-text-secondary)]">
+      Напиши в Telegram короткий бриф: что продвигаешь, для кого это и почему это должно быть
+      интересно читателям ctxt.dev.
+    </p>
+    <a
+      href={telegramUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-6 inline-flex items-center gap-2 rounded-md bg-[var(--color-accent)] px-6 py-3 font-mono text-sm font-medium text-white transition-opacity hover:opacity-90"
+    >
+      Написать в Telegram
+    </a>
+  </section>
+</BaseLayout>

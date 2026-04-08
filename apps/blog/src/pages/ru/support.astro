@@ -1,0 +1,67 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const supportUrl = "https://boosty.to/t3chn/donate";
+const telegramUrl = "https://t.me/ctxtdev";
+---
+
+<BaseLayout title="Поддержать ctxt.dev" lang="ru">
+  <section aria-label="Support hero" class="mb-12">
+    <p class="mb-2 font-mono text-sm uppercase tracking-widest text-[var(--color-accent)]">
+      Поддержка
+    </p>
+    <h1 class="text-4xl font-bold tracking-tight text-[var(--color-text)] sm:text-5xl">
+      Поддержать ctxt.dev
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--color-text-secondary)]">
+      Если блог экономит тебе время или помогает яснее думать про AI agents и context engineering,
+      можно поддержать следующие материалы напрямую.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a
+        href={supportUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-md bg-[var(--color-accent)] px-6 py-3 font-mono text-sm font-medium text-white transition-opacity hover:opacity-90"
+      >
+        Поддержать на Boosty
+      </a>
+      <a
+        href={telegramUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] px-6 py-3 font-mono text-sm text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+      >
+        Перейти в @ctxtdev
+      </a>
+    </div>
+  </section>
+
+  <section class="grid gap-6 md:grid-cols-2">
+    <article
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+    >
+      <h2 class="text-xl font-semibold text-[var(--color-text)]">На что идёт поддержка</h2>
+      <ul class="mt-4 space-y-3 text-[var(--color-text-secondary)]">
+        <li>Новые технические статьи про AI agents, context engineering и toolchains</li>
+        <li>Время на исследование, написание и поддержку сопутствующих open-source проектов</li>
+        <li>Короткие заметки и обсуждение новых материалов в Telegram</li>
+      </ul>
+    </article>
+
+    <article
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+    >
+      <h2 class="text-xl font-semibold text-[var(--color-text)]">Как ещё помочь</h2>
+      <ul class="mt-4 space-y-3 text-[var(--color-text-secondary)]">
+        <li>Поделиться статьёй с теми, кто строит AI-системы</li>
+        <li>
+          Присоединиться к обсуждению в <span class="font-mono text-[var(--color-text)]"
+            >@ctxtdev</span
+          >
+        </li>
+        <li>Сослаться на материал в своих заметках, докладе или канале</li>
+      </ul>
+    </article>
+  </section>
+</BaseLayout>

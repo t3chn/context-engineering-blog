@@ -1,0 +1,70 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const telegramUrl = "https://t.me/ctxtdev";
+---
+
+<BaseLayout title="Работать со мной" lang="ru">
+  <section aria-label="Consulting hero" class="mb-12">
+    <p class="mb-2 font-mono text-sm uppercase tracking-widest text-[var(--color-accent)]">
+      Консалтинг
+    </p>
+    <h1 class="text-4xl font-bold tracking-tight text-[var(--color-text)] sm:text-5xl">
+      Работать со мной
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--color-text-secondary)]">
+      Я помогаю командам проектировать AI agent systems, улучшать качество контекста и делать
+      LLM-powered workflows надёжнее.
+    </p>
+  </section>
+
+  <section class="grid gap-6 md:grid-cols-3">
+    <article
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+    >
+      <h2 class="text-lg font-semibold text-[var(--color-text)]">AI agent architecture review</h2>
+      <p class="mt-3 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+        Разбор границ агента, tool use, handoffs и failure modes до того, как система закостенеет в
+        production.
+      </p>
+    </article>
+
+    <article
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+    >
+      <h2 class="text-lg font-semibold text-[var(--color-text)]">Context engineering audit</h2>
+      <p class="mt-3 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+        Аудит prompts, retrieval, memory, instructions и surrounding data flow, чтобы снизить drift
+        и повысить надёжность.
+      </p>
+    </article>
+
+    <article
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+    >
+      <h2 class="text-lg font-semibold text-[var(--color-text)]">Team workshop</h2>
+      <p class="mt-3 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+        Практическая сессия для команд, которые строят продукты на LLM, agents или внутреннем
+        AI-tooling.
+      </p>
+    </article>
+  </section>
+
+  <section
+    class="mt-6 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6"
+  >
+    <h2 class="text-xl font-semibold text-[var(--color-text)]">Начни с короткого описания</h2>
+    <p class="mt-3 max-w-2xl text-[var(--color-text-secondary)]">
+      Напиши в Telegram, что у тебя за use case, какой стек уже есть и где сейчас узкое место. Если
+      fit есть, быстро определим следующий шаг.
+    </p>
+    <a
+      href={telegramUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-6 inline-flex items-center gap-2 rounded-md bg-[var(--color-accent)] px-6 py-3 font-mono text-sm font-medium text-white transition-opacity hover:opacity-90"
+    >
+      Написать в Telegram
+    </a>
+  </section>
+</BaseLayout>
