@@ -10,6 +10,10 @@ interface Props {
 const { title, description = "Context Engineering Blog", lang = "en" } = Astro.props;
 const currentPath = Astro.url.pathname;
 const basePath = lang === "ru" ? "/ru" : "";
+const cloudflareWebAnalyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN;
+const cloudflareWebAnalyticsBeacon = cloudflareWebAnalyticsToken
+  ? JSON.stringify({ token: cloudflareWebAnalyticsToken })
+  : null;
 ---
 
 <!doctype html>
@@ -61,6 +65,17 @@ const basePath = lang === "ru" ? "/ru" : "";
 
     <!-- Additional head content from child layouts -->
     <slot name="head" />
+
+    <!-- Cloudflare Web Analytics -->
+    {
+      cloudflareWebAnalyticsBeacon && (
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={cloudflareWebAnalyticsBeacon}
+        />
+      )
+    }
 
     <!-- Theme script - runs before render to prevent flash -->
     <script is:inline>
