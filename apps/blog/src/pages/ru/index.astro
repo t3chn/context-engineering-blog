@@ -27,9 +27,21 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
           Context<span class="text-[var(--color-accent)]">.</span>Engineering
         </h1>
         <p class="mt-4 max-w-xl text-lg leading-relaxed text-[var(--color-text-secondary)]">
-          Блог о context engineering, структуризации информации для LLM и AI-разработке. Практика,
-          не теория.
+          Практика по AI agents, context engineering и toolchains. Полные статьи — на сайте.
+          Короткие заметки и обсуждение — в Telegram.
         </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <span
+            class="rounded-full border border-[var(--color-border)] px-3 py-1 font-mono text-xs text-[var(--color-text-secondary)]"
+          >
+            100+ читателей ежедневно
+          </span>
+          <span
+            class="rounded-full border border-[var(--color-border)] px-3 py-1 font-mono text-xs text-[var(--color-text-secondary)]"
+          >
+            5k+ читателей в месяц
+          </span>
+        </div>
       </div>
     </div>
   </section>
@@ -116,7 +128,11 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
     class="mt-16 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8 text-center"
   >
     <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-text-secondary)]">
-      Следи за обновлениями
+      5k+ читателей в месяц
+    </p>
+    <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-text-secondary)]">
+      Переходи в <span class="font-mono text-[var(--color-text)]">@ctxtdev</span> за короткими заметками,
+      промежуточными идеями и обсуждением новых постов.
     </p>
     <a
       href="https://t.me/ctxtdev"
@@ -150,5 +166,8 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
         ></path>
       </svg>
     </a>
+    <p class="mt-3 font-mono text-xs text-[var(--color-text-secondary)]">
+      100+ читателей ежедневно
+    </p>
   </section>
 </BaseLayout>
