@@ -5,6 +5,10 @@ date: 2026-04-08
 tags: ["contextengineering", "agents", "architecture", "verification"]
 lang: en
 canonical_url: https://ctxt.dev/posts/en/ai-agents-need-permission-boundaries/
+devto_id: 3472559
+devto_url: "https://dev.to/t3chn/ai-agents-need-permission-boundaries-not-personalities-2g6f"
+hashnode_id: 69d685a8c9c19091ef75ba55
+hashnode_url: "https://t3chn.hashnode.dev/ai-agents-need-permission-boundaries-not-personalities"
 ---
 
 Most agent tooling mistakes coordination for reliability. It gives you more
