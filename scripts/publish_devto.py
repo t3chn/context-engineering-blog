@@ -24,6 +24,13 @@ from scripts.shared.article import parse_article, slugify_tag, rewrite_image_pat
 
 DEVTO_API_BASE = "https://dev.to/api"
 MAX_TAGS = 4
+# Dev.to/Forem rejects urllib's default Python user agent with HTTP 403.
+# Publishing also stays in draft mode unless `published` is explicit.
+DEVTO_API_HEADERS = {
+    "Content-Type": "application/json",
+    "Accept": "application/vnd.forem.api-v1+json",
+    "User-Agent": "context-engineering-blog/0.1 (+https://ctxt.dev)",
+}
 
 
 def build_payload(article) -> dict:
@@ -32,7 +39,9 @@ def build_payload(article) -> dict:
     return {
         "article": {
             "title": article.title,
+            "slug": article.slug,
             "body_markdown": body_with_abs_images,
+            "published": True,
             "tags": tags,
             "canonical_url": article.canonical_url,
             "description": article.description,
@@ -54,11 +63,7 @@ def publish(article, payload: dict, api_key: str) -> dict:
         url,
         data=data,
         method=method,
-        headers={
-            "api-key": api_key,
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
+        headers={"api-key": api_key, **DEVTO_API_HEADERS},
     )
     try:
         with urllib.request.urlopen(req) as resp:
