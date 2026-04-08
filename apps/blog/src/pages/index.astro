@@ -7,6 +7,7 @@ const posts = await getCollection("posts", ({ data }) => {
 });
 
 const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const basePath = "";
 ---
 
 <BaseLayout title="Context Engineering Blog" lang="en">
@@ -132,38 +133,37 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
       Join <span class="font-mono text-[var(--color-text)]">@ctxtdev</span> for short updates, in-between
       ideas, and discussion around new posts.
     </p>
-    <a
-      href="https://t.me/ctxtdev"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="group mt-4 inline-flex items-center gap-2.5 rounded-md border border-[var(--color-border)] bg-transparent px-6 py-3 font-mono text-sm text-[var(--color-text)] transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-accent-500/5 focus-ring"
-    >
-      <svg
-        aria-hidden="true"
-        class="h-4 w-4 text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-accent)]"
-        viewBox="0 0 24 24"
-        fill="currentColor"
+    <div class="mt-6 flex flex-wrap justify-center gap-3">
+      <a
+        href="https://t.me/ctxtdev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group inline-flex items-center gap-2.5 rounded-md bg-[var(--color-accent)] px-6 py-3 font-mono text-sm font-medium text-white transition-opacity hover:opacity-90 focus-ring"
       >
-        <path
-          d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
-        ></path>
-      </svg>
-      <span>@ctxtdev</span>
-      <svg
-        aria-hidden="true"
-        class="h-3 w-3 text-[var(--color-text-secondary)] transition-all group-hover:text-[var(--color-accent)] group-hover:translate-x-0.5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
+        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+          ></path>
+        </svg>
+        <span>Join @ctxtdev</span>
+      </a>
+      <a
+        href={`${basePath}/support`}
+        class="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] px-6 py-3 font-mono text-sm text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-accent-500/5 focus-ring"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-        ></path>
-      </svg>
-    </a>
+        Support the blog
+      </a>
+      <a
+        href={`${basePath}/work-with-me`}
+        class="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] px-6 py-3 font-mono text-sm text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-accent-500/5 focus-ring"
+      >
+        Work with me
+      </a>
+    </div>
+    <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[var(--color-text-secondary)]">
+      Support keeps the writing going. If you are building AI agents and need a second set of eyes,
+      the consulting path is open too.
+    </p>
     <p class="mt-3 font-mono text-xs text-[var(--color-text-secondary)]">100+ daily readers</p>
   </section>
 </BaseLayout>

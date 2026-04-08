@@ -139,38 +139,40 @@ const jsonLd = {
               : "Short updates, in-between ideas, and discussion around new posts live in @ctxtdev."
           }
         </p>
-        <a
-          href="https://t.me/ctxtdev"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group mt-4 inline-flex items-center gap-2.5 rounded-md border border-[var(--color-border)] bg-transparent px-5 py-2.5 font-mono text-sm text-[var(--color-text)] transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-accent-500/5"
-        >
-          <svg
-            aria-hidden="true"
-            class="h-4 w-4 text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-accent)]"
-            viewBox="0 0 24 24"
-            fill="currentColor"
+        <div class="mt-4 flex flex-wrap gap-3">
+          <a
+            href="https://t.me/ctxtdev"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2.5 rounded-md bg-[var(--color-accent)] px-5 py-2.5 font-mono text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
-            <path
-              d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
-            ></path>
-          </svg>
-          <span>{lang === "ru" ? "Перейти в @ctxtdev" : "Join @ctxtdev"}</span>
-          <svg
-            aria-hidden="true"
-            class="h-3 w-3 text-[var(--color-text-secondary)] transition-all group-hover:text-[var(--color-accent)] group-hover:translate-x-0.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
+            <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+              ></path>
+            </svg>
+            <span>{lang === "ru" ? "Перейти в @ctxtdev" : "Join @ctxtdev"}</span>
+          </a>
+          <a
+            href={`${basePath}/support`}
+            class="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] px-5 py-2.5 font-mono text-sm text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-accent-500/5"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-            ></path>
-          </svg>
-        </a>
+            {lang === "ru" ? "Поддержать блог" : "Support the blog"}
+          </a>
+          <a
+            href={`${basePath}/work-with-me`}
+            class="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] px-5 py-2.5 font-mono text-sm text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-accent-500/5"
+          >
+            {lang === "ru" ? "Работать со мной" : "Work with me"}
+          </a>
+        </div>
+        <p class="mt-4 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+          {
+            lang === "ru"
+              ? "Если статья была полезна, можно поддержать блог. Если тебе нужен разбор похожей задачи в реальном проекте — пиши по рабочему запросу."
+              : "If the article was useful, you can support the blog. If you need help with a similar problem in a real project, the consulting path is open too."
+          }
+        </p>
       </section>
 
       <!-- Navigation -->
