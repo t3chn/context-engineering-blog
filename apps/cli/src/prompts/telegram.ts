@@ -8,11 +8,12 @@ function loadStyleContext(platform: "telegram" | "blog_ru" | "blog_en"): string 
   try {
     const tldr = readFileSync(path.join(skillDir, "references/TLDR.md"), "utf-8");
 
-    const platformFile = platform === "telegram"
-      ? "references/TELEGRAM.md"
-      : platform === "blog_ru"
-        ? "references/BLOG_RU.md"
-        : "references/BLOG_EN.md";
+    const platformFile =
+      platform === "telegram"
+        ? "references/TELEGRAM.md"
+        : platform === "blog_ru"
+          ? "references/BLOG_RU.md"
+          : "references/BLOG_EN.md";
 
     const platformGuide = readFileSync(path.join(skillDir, platformFile), "utf-8");
 
@@ -39,16 +40,33 @@ ${styleContext}
 ## Задача
 Создай пост для Telegram на основе моих заметок.
 
-## Философия: Context-First Thinking
-Формат: Проблема → Контекст → Решение → Инсайт
+## Роль канала
+Telegram для @ctxtdev — это field-notes layer.
+Он должен быть раньше, короче и резче, чем блог.
+По умолчанию это НЕ пересказ статьи и НЕ article trailer.
+
+## Decision rule
+У поста должна быть ровно одна работа:
+- Signal — одно жёсткое наблюдение, обычно без ссылки
+- Cut — одно решение / architectural reversal, ссылка optional
+- Build note — одно конкретное изменение или lesson learned, ссылка optional
+- Dispatch — один payoff из новой статьи + одна ссылка
+
+Если заметки явно не про запуск статьи, НЕ делай Dispatch.
 
 ## Требования:
-- 3-7 коротких абзацев по 1-3 строки
+- 3-6 коротких абзацев по 1-3 строки
+- один пост = одна идея
 - Чистый текст, минимум эмодзи (max 1-2)
-- Хештеги в конце (#contextengineering #llm)
+- default длина 350-650 символов, можно до 900 если иначе теряется смысл
+- максимум 1 ссылка, и только если она реально добавляет value
+- хештеги в конце (#contextengineering + optional second tag)
 - БЕЗ подписи автора
 - БЕЗ bullet-списков
 - БЕЗ мотивационного тона
+- НЕ начинать с фраз вроде "Сегодня изучил", "Новый пост", "Thoughts on"
+- Начинать с tension, проблемы, observation или contradiction
+- Писать на том же языке, что и основная заметка, если явно не сказано иначе
 
 ## Мои заметки:
 Заголовок: ${input.title}
