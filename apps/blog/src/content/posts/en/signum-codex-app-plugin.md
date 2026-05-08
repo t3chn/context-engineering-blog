@@ -9,6 +9,8 @@ devto_id: 3634844
 devto_url: "https://dev.to/t3chn/signum-can-now-be-installed-in-codex-app-as-a-plugin-56ef"
 hashnode_id: 69fe085a4a13089bbb93b6a9
 hashnode_url: "https://t3chn.hashnode.dev/signum-can-now-be-installed-in-codex-app-as-a-plugin"
+hn_id: 48065086
+hn_url: "https://news.ycombinator.com/item?id=48065086"
 ---
 
 AI-agent workflows have a boring but important problem: a good process often lives inside one runtime.
