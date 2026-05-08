@@ -5,6 +5,10 @@ date: 2026-05-08
 tags: ["context-engineering", "codex", "agents", "verification", "signum"]
 lang: en
 canonical_url: https://ctxt.dev/posts/en/signum-codex-app-plugin/
+devto_id: 3634844
+devto_url: "https://dev.to/t3chn/signum-can-now-be-installed-in-codex-app-as-a-plugin-56ef"
+hashnode_id: 69fe085a4a13089bbb93b6a9
+hashnode_url: "https://t3chn.hashnode.dev/signum-can-now-be-installed-in-codex-app-as-a-plugin"
 ---
 
 AI-agent workflows have a boring but important problem: a good process often lives inside one runtime.

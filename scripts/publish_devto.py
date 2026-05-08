@@ -33,8 +33,13 @@ DEVTO_API_HEADERS = {
 }
 
 
+def devto_tag(tag: str) -> str:
+    """Normalize tags for dev.to's alphanumeric-only API constraint."""
+    return slugify_tag(tag).replace("-", "")
+
+
 def build_payload(article) -> dict:
-    tags = [slugify_tag(t) for t in article.tags][:MAX_TAGS]
+    tags = [devto_tag(t) for t in article.tags][:MAX_TAGS]
     body_with_abs_images = rewrite_image_paths(article.body, article.canonical_url)
     return {
         "article": {
