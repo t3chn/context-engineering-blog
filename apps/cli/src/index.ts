@@ -78,7 +78,7 @@ program
         generateBlogArticles(aiProvider, postInput),
       ]);
 
-      console.log("✓ Telegram пост (RU)");
+      console.log("✓ Telegram пост");
       console.log("✓ Блог статья (RU)");
       console.log("✓ Блог статья (EN)");
 

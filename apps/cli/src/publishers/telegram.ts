@@ -138,7 +138,7 @@ export async function publishToTelegram(
     try {
       const result = await bot.api.sendMessage(channelId, processedText, {
         parse_mode: parseMode ?? undefined,
-        disable_web_page_preview: disablePreview,
+        link_preview_options: disablePreview ? { is_disabled: true } : undefined,
       });
 
       return {
@@ -220,7 +220,7 @@ export async function editMessage(
   try {
     await bot.api.editMessageText(channelId, messageId, processedText, {
       parse_mode: parseMode ?? undefined,
-      disable_web_page_preview: disablePreview,
+      link_preview_options: disablePreview ? { is_disabled: true } : undefined,
     });
 
     return { success: true, messageId };

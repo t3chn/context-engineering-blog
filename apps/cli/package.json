@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "tsx src/index.ts",
-    "build": "tsup src/index.ts --format esm --dts",
+    "build": "tsup src/index.ts --format esm --dts --tsconfig ../../tsconfig.json",
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {

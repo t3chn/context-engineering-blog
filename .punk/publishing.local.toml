@@ -1,0 +1,7 @@
+schema_version = "punk.publishing.local.v1"
+
+workspace_ref = "punk-publishing://project/context-engineering-blog"
+workspace_root = "~/.local/share/punk/publishing/projects/context-engineering-blog"
+
+mode = "manual-bootstrap"
+resolver_status = "pending"

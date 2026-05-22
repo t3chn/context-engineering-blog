@@ -12,10 +12,10 @@ export interface PostInput {
 }
 
 export interface GeneratedPost {
-  /** Telegram post content (short, RU) */
+  /** Telegram post content */
   telegram: {
     text: string;
-    lang: "ru";
+    lang: "ru" | "en";
   };
   /** Blog article (full, both languages) */
   blog: {

@@ -28,6 +28,9 @@ pnpm-debug.log*
 # Cache
 .cache/
 .turbo/
+__pycache__/
+*.py[cod]
+.playwright-mcp/
 
 # Test coverage
 coverage/

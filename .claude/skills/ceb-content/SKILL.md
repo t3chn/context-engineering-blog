@@ -12,12 +12,20 @@ description: |
 
 ## Loading Context
 
-1. Read [references/TLDR.md](references/TLDR.md) — style essence
-2. Load [references/INDEX.json](references/INDEX.json) and select sections by task:
+1. Prefer the publishing workspace from `.punk/publishing.local.toml`:
+   `/Users/vi/.local/share/punk/publishing/projects/context-engineering-blog`
+2. Load workspace style first:
+   - `styles/shared-author-posture.md`
+   - `styles/content-engineering-style-guide.md`
+   - platform style, for example `styles/telegram-field-notes-style.md`
+   - `.agent-writing/CLAIM_CHECK.md` for factual claims
+   - `.agent-writing/BANNED_AI_TELLS.md` for style cleanup
+3. If the workspace is unavailable, read [references/TLDR.md](references/TLDR.md) and
+   load [references/INDEX.json](references/INDEX.json) by task:
    - `telegram_post` → voice + prohibited + core + telegram
    - `blog_ru` → voice + prohibited + core + blog_ru
    - `blog_en` → voice + prohibited + core + blog_en
-3. Load examples from assets/ only if needed
+4. Load examples from assets/ only if needed
 
 ## Philosophy: Context-First Thinking
 
@@ -82,6 +90,8 @@ lang: ru
 - [ ] Context present (why it matters)?
 - [ ] Practical solution?
 - [ ] Insight included?
+- [ ] Factual claims source-backed, workspace-observed, first-person, bounded inference, or opinion?
+- [ ] Concrete artifact, example, command, receipt, or limitation visible?
 
 ### Post-flight
 
@@ -89,6 +99,8 @@ lang: ru
 - [ ] Hashtags at the end?
 - [ ] No author signature?
 - [ ] No motivational tone?
+- [ ] No unsupported maturity or product claims?
+- [ ] No banned AI tells from the publishing workspace?
 
 ## Platforms
 
